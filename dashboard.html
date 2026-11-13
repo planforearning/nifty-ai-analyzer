@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIFTY AI Analyzer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: sans-serif; background:#0f172a; color:#fff; padding:16px; margin:0; }
+  h1 { text-align:center; font-size:22px; }
+  .card { background:#1e293b; border-radius:12px; padding:16px; margin:16px auto; max-width:500px; }
+  .row { display:flex; justify-content:space-between; margin:8px 0; }
+  .up { color:#22c55e; } .down { color:#ef4444; }
+  small { color:#94a3b8; }
+</style>
+</head>
+<body>
+  <h1>NIFTY AI Analyzer</h1>
+  <div class="card"><canvas id="chart"></canvas></div>
+  <div class="card">
+    <div class="row"><span>Last Close</span><b id="last">-</b></div>
+    <div class="row"><span>RSI (14)</span><b id="rsi">-</b></div>
+    <div class="row"><span>SMA (5)</span><b id="sma5">-</b></div>
+    <div class="row"><span>SMA (20)</span><b id="sma20">-</b></div>
+    <div class="row"><span>Signal</span><b id="signal">-</b></div>
+    <small id="note">Data load ho raha hai...</small>
+  </div>
+
+<script>
+function sma(arr, n){ return arr.slice(-n).reduce((a,b)=>a+b,0)/n; }
+function rsi(arr, n=14){
+  let gain=0, loss=0;
+  for(let i=arr.length-n; i<arr.length; i++){
+    const d = arr[i]-arr[i-1];
+    if(d>=0) gain+=d; else loss-=d;
+  }
+  if(loss===0) return 100;
+  return 100 - 100/(1 + gain/loss);
+}
+
+fetch('data.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    const prices = data.prices, dates = data.dates;
+    const r = rsi(prices), s5 = sma(prices,5), s20 = sma(prices,20);
+
+    document.getElementById('last').textContent = prices[prices.length-1].toFixed(2);
+    document.getElementById('rsi').textContent = r.toFixed(1);
+    document.getElementById('sma5').textContent = s5.toFixed(0);
+    document.getElementById('sma20').textContent = s20.toFixed(0);
+
+    const sig = document.getElementById('signal');
+    if(r>70){ sig.textContent='Overbought'; sig.className='down'; }
+    else if(r<30){ sig.textContent='Oversold'; sig.className='up'; }
+    else if(s5>s20){ sig.textContent='Bullish trend'; sig.className='up'; }
+    else { sig.textContent='Bearish trend'; sig.className='down'; }
+
+    document.getElementById('note').textContent =
+      'Last data: ' + dates[dates.length-1] + ' (roz market ke baad update). Sirf learning ke liye, trading advice nahi.';
+
+    new Chart(document.getElementById('chart'), {
+      type:'line',
+      data:{ labels: dates,
+             datasets:[{ label:'NIFTY 50', data:prices, borderColor:'#38bdf8', pointRadius:0, tension:0.2 }]},
+      options:{ plugins:{ legend:{ labels:{ color:'#fff' } } },
+                scales:{ x:{ ticks:{ color:'#94a3b8', maxTicksLimit:6 } },
+                        y:{ ticks:{ color:'#94a3b8' } } } }
+    });
+  })
+  .catch(() => {
+    document.getElementById('note').textContent = 'data.json load nahi hua.';
+  });
+</script>
+</body>
+</html>
