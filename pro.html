@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIFTY AI Analyzer Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: sans-serif; background:#0f172a; color:#fff; padding:16px; margin:0; }
+  h1 { text-align:center; font-size:22px; }
+  .card { background:#1e293b; border-radius:12px; padding:16px; margin:16px auto; max-width:500px; }
+  .row { display:flex; justify-content:space-between; margin:8px 0; }
+  .up { color:#22c55e; } .down { color:#ef4444; }
+  small { color:#94a3b8; }
+  h3 { margin:0 0 8px; font-size:15px; color:#94a3b8; }
+</style>
+</head>
+<body>
+  <h1>NIFTY AI Analyzer Pro</h1>
+  <div class="card"><h3>Price, SMA 20, Support / Resistance</h3><canvas id="chart"></canvas></div>
+  <div class="card"><h3>MACD (12, 26, 9)</h3><canvas id="macdChart"></canvas></div>
+  <div class="card">
+    <div class="row"><span>Last Close</span><b id="last">-</b></div>
+    <div class="row"><span>RSI (14)</span><b id="rsi">-</b></div>
+    <div class="row"><span>MACD</span><b id="macd">-</b></div>
+    <div class="row"><span>MACD Signal</span><b id="msig">-</b></div>
+    <div class="row"><span>Support (20d low)</span><b id="sup">-</b></div>
+    <div class="row"><span>Resistance (20d high)</span><b id="res">-</b></div>
+    <div class="row"><span>RSI Signal</span><b id="rsig">-</b></div>
+    <div class="row"><span>MACD Signal</span><b id="msg">-</b></div>
+    <small id="note">Data load ho raha hai...</small>
+  </div>
+
+<script>
+function smaArr(a,n){ return a.map((_,i)=> i<n-1 ? null : a.slice(i-n+1,i+1).reduce((x,y)=>x+y,0)/n); }
+function ema(a,n){
+  const k=2/(n+1), o=[a[0]];
+  for(let i=1;i<a.length;i++) o.push(a[i]*k + o[i-1]*(1-k));
+  return o;
+}
+function rsi(arr,n=14){
+  let g=0,l=0;
+  for(let i=arr.length-n;i<arr.length;i++){
+    const d=arr[i]-arr[i-1];
+    if(d>=0) g+=d; else l-=d;
+  }
+  if(l===0) return 100;
+  return 100-100/(1+g/l);
+}
+function set(id,t,c){ const e=document.getElementById(id); e.textContent=t; if(c) e.className=c; }
+
+fetch('data.json?t='+Date.now())
+  .then(r=>r.json())
+  .then(d=>{
+    const p=d.prices, dates=d.dates, n=p.length;
+    const e12=ema(p,12), e26=ema(p,26);
+    const macd=e12.map((v,i)=>v-e26[i]);
+    const msig=ema(macd,9);
+    const hist=macd.map((v,i)=>v-msig[i]);
+    const last20=p.slice(-20);
+    const sup=Math.min(...last20), res=Math.max(...last20);
+    const r=rsi(p);
+
+    set('last',p[n-1].toFixed(2));
+    set('rsi',r.toFixed(1));
+    set('macd',macd[n-1].toFixed(1));
+    set('msig',msig[n-1].toFixed(1));
+    set('sup',sup.toFixed(0));
+    set('res',res.toFixed(0));
+
+    if(r>70) set('rsig','Overbought','down');
+    else if(r<30) set('rsig','Oversold','up');
+    else set('rsig','Neutral');
+
+    if(macd[n-1]>msig[n-1]) set('msg','Bullish','up');
+    else set('msg','Bearish','down');
+
+    set('note','Last data: '+dates[n-1]+'. Sirf learning ke liye, trading advice nahi.');
+
+    const tick={ color:'#94a3b8', maxTicksLimit:6 };
+    const leg={ labels:{ color:'#fff', boxWidth:12 } };
+
+    new Chart(document.getElementById('chart'),{
+      type:'line',
+      data:{ labels:dates, datasets:[
+        { label:'NIFTY', data:p, borderColor:'#38bdf8', pointRadius:0, tension:0.2 },
+        { label:'SMA 20', data:smaArr(p,20), borderColor:'#facc15', pointRadius:0, borderWidth:1.5 },
+        { label:'Support', data:p.map(()=>sup), borderColor:'#22c55e', borderDash:[6,4], pointRadius:0, borderWidth:1 },
+        { label:'Resistance', data:p.map(()=>res), borderColor:'#ef4444', borderDash:[6,4], pointRadius:0, borderWidth:1 }
+      ]},
+      options:{ plugins:{ legend:leg }, scales:{ x:{ ticks:tick }, y:{ ticks:{ color:'#94a3b8' } } } }
+    });
+
+    new Chart(document.getElementById('macdChart'),{
+      data:{ labels:dates, datasets:[
+        { type:'bar', label:'Histogram', data:hist, backgroundColor:hist.map(v=>v>=0?'#22c55e88':'#ef444488') },
+        { type:'line', label:'MACD', data:macd, borderColor:'#38bdf8', pointRadius:0, borderWidth:1.5 },
+        { type:'line', label:'Signal', data:msig, borderColor:'#f97316', pointRadius:0, borderWidth:1.5 }
+      ]},
+      options:{ plugins:{ legend:leg }, scales:{ x:{ ticks:tick }, y:{ ticks:{ color:'#94a3b8' } } } }
+    });
+  })
+  .catch(()=>{ document.getElementById('note').textContent='data.json load nahi hua.'; });
+</script>
+</body>
+</html>
