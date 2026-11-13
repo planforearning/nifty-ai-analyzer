@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIFTY AI Analyzer</title>
+    <title>NIFTY AI Analyzer Pro - Live Signals</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
@@ -14,74 +14,41 @@
             padding: 15px; 
             margin: 0; 
         }
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-        }
-        h1 { 
-            text-align: center; 
-            font-size: 22px; 
-            color: #38bdf8; 
-            margin-bottom: 15px; 
-        }
-        .card { 
-            background: #1e293b; 
-            border-radius: 12px; 
-            padding: 16px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
-        }
-        .row { 
-            display: flex; 
-            justify-content: space-between; 
-            margin: 10px 0; 
-            font-size: 0.95rem; 
-            border-bottom: 1px solid #334155;
-            padding-bottom: 6px;
-        }
-        .row:last-child {
-            border-bottom: none;
-        }
-        .up { color: #22c55e; font-weight: bold; }
-        .down { color: #ef4444; font-weight: bold; }
-        small { 
-            color: #94a3b8; 
-            display: block; 
-            margin-top: 10px; 
-            text-align: center; 
-            font-size: 0.8rem;
-        }
-        canvas { 
-            width: 100% !important; 
-            height: 220px !important; 
-        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; font-size: 22px; color: #38bdf8; margin-bottom: 15px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 0.95rem; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+        .row:last-child { border-bottom: none; }
+        .buy-badge { background: #22c55e; color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+        .sell-badge { background: #ef4444; color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+        .neutral-badge { background: #eab308; color: #000; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+        small { color: #94a3b8; display: block; margin-top: 10px; text-align: center; font-size: 0.8rem; }
+        canvas { width: 100% !important; height: 220px !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>NIFTY AI Analyzer</h1>
+    <h1>NIFTY AI Analyzer Pro</h1>
     
     <!-- Chart Card -->
     <div class="card">
         <canvas id="chart"></canvas>
     </div>
     
-    <!-- Data Summary Card -->
+    <!-- Signal & Data Summary Card -->
     <div class="card">
         <div class="row"><span>Last Close</span><b id="last">-</b></div>
         <div class="row"><span>RSI (14)</span><b id="rsi">-</b></div>
-        <div class="row"><span>SMA (5)</span><b id="sma5">-</b></div>
-        <div class="row"><span>SMA (20)</span><b id="sma20">-</b></div>
-        <div class="row"><span>RSI Signal</span><b id="signal">-</b></div>
-        <small id="note">Data load ho raha hai...</small>
+        <div class="row"><span>SMA (5) vs SMA (20)</span><b id="trend">-</b></div>
+        <div class="row"><span>AI Trade Signal</span><span id="signalBadge">-</span></div>
+        <small id="note">Sirf learning aur analysis ke liye, trading advice nahi.</small>
     </div>
 </div>
 
 <script>
-    // Calculation Functions
     function sma(arr, n){ 
-        return (arr.slice(-n).reduce((a,b)=>a+b,0)/n).toFixed(2); 
+        return Number((arr.slice(-n).reduce((a,b)=>a+b,0)/n).toFixed(2)); 
     }
     
     function rsi(arr, n=14){
@@ -91,33 +58,33 @@
             if(d>=0) gain+=d; else loss-=d;
         }
         if(loss===0) return 100;
-        return (100 - (100 / (1 + gain/loss))).toFixed(1);
+        return Number((100 - (100 / (1 + gain/loss))).toFixed(1));
     }
 
-    // NIFTY Data Points
+    // Sample Data (Yahan aap live ya naya data daal sakte hain)
     const labels = ['13 Aug', '28 Aug', '15 Sep', '30 Sep', '16 Oct', '03 Nov', '13 Nov'];
     const prices = [24200, 23800, 23200, 22400, 22800, 24500, 25144.30];
 
-    // Display Values
-    document.getElementById('last').innerText = prices[prices.length-1];
-    document.getElementById('rsi').innerText = rsi(prices);
-    document.getElementById('sma5').innerText = sma(prices, 5);
-    document.getElementById('sma20').innerText = sma(prices, 20);
-    
-    const rsiVal = parseFloat(rsi(prices));
-    const sig = document.getElementById('signal');
-    if(rsiVal > 70) { 
-        sig.innerText = "Overbought (" + rsiVal + ")"; 
-        sig.className = "down"; 
-    } else if(rsiVal < 30) { 
-        sig.innerText = "Oversold (" + rsiVal + ")"; 
-        sig.className = "up"; 
-    } else { 
-        sig.innerText = "Neutral (" + rsiVal + ")"; 
-        sig.className = "up"; 
-    }
+    const lastPrice = prices[prices.length-1];
+    const currentRsi = rsi(prices);
+    const s5 = sma(prices, 5);
+    const s20 = sma(prices, 20);
 
-    document.getElementById('note').innerText = "Last data: 13 Nov. Sirf learning ke liye, trading advice nahi.";
+    document.getElementById('last').innerText = lastPrice;
+    document.getElementById('rsi').innerText = currentRsi;
+    document.getElementById('trend').innerText = s5 > s20 ? "Bullish (SMA5 > SMA20)" : "Bearish (SMA5 < SMA20)";
+
+    // AI Buy / Sell Logic
+    const signalBadge = document.getElementById('signalBadge');
+    if(currentRsi > 70) {
+        signalBadge.innerHTML = '<span class="sell-badge">OVERBOUGHT / CAUTION (SELL ZONE)</span>';
+    } else if(currentRsi < 30) {
+        signalBadge.innerHTML = '<span class="buy-badge">OVERSOLD (BUY OPPORTUNITY)</span>';
+    } else if(s5 > s20) {
+        signalBadge.innerHTML = '<span class="buy-badge">STRONG BUY (MOMENTUM)</span>';
+    } else {
+        signalBadge.innerHTML = '<span class="neutral-badge">HOLD / NEUTRAL</span>';
+    }
 
     // Render Chart
     const ctx = document.getElementById('chart').getContext('2d');
@@ -130,7 +97,7 @@
                 data: prices,
                 borderColor: '#0ea5e9',
                 borderWidth: 2,
-                pointRadius: 3,
+                pointRadius: 4,
                 fill: false
             }]
         },
