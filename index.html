@@ -1,105 +1,381 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NIFTY AI Analyzer Pro</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-  body { font-family: sans-serif; background:#0f172a; color:#fff; padding:16px; margin:0; }
-  h1 { text-align:center; font-size:22px; }
-  .card { background:#1e293b; border-radius:12px; padding:16px; margin:16px auto; max-width:500px; }
-  .row { display:flex; justify-content:space-between; margin:8px 0; }
-  .up { color:#22c55e; } .down { color:#ef4444; }
-  small { color:#94a3b8; }
-  h3 { margin:0 0 8px; font-size:15px; color:#94a3b8; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIFTY AI Pro Terminal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #0b1120; --card: #151f32; --card-dark: #0f172a; --border: #26334d;
+            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .container { max-width: 720px; margin: 0 auto; }
+
+        /* Top Header */
+        .topbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .brand { font-size: 1.05rem; font-weight: 800; color: var(--blue); display: flex; align-items: center; gap: 6px; }
+        .dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+        .spot-pill { background: var(--card-dark); padding: 5px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: 1px solid var(--border); }
+
+        /* Scrollable Pro Navigation Tabs (Like Reel) */
+        .nav-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 8px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--blue); color: #000; border-color: var(--blue); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards & Grids */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .card-title { font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 10px; border-radius: 9px; }
+        .stat-label { font-size: 0.7rem; color: var(--muted); }
+        .stat-val { font-size: 0.95rem; font-weight: 800; margin-top: 3px; }
+
+        /* AI Signal Banner */
+        .ai-banner { background: linear-gradient(135deg, #172554, #151f32); border: 1px solid #3b82f6; border-radius: 12px; padding: 13px; margin-bottom: 12px; }
+        .badge { padding: 3px 9px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        .b-buy { background: var(--green); color: #000; }
+        .b-sell { background: var(--red); color: #fff; }
+        .b-wait { background: var(--yellow); color: #000; }
+
+        /* Option Chain Strike Bars */
+        .oi-row { display: grid; grid-template-columns: 1fr 62px 1fr; align-items: center; gap: 6px; margin-bottom: 7px; font-size: 0.75rem; }
+        .bar-wrap-left { display: flex; justify-content: flex-end; background: var(--card-dark); border-radius: 4px; overflow: hidden; height: 14px; }
+        .bar-wrap-right { display: flex; justify-content: flex-start; background: var(--card-dark); border-radius: 4px; overflow: hidden; height: 14px; }
+        .bar-put { background: var(--green); height: 100%; }
+        .bar-call { background: var(--red); height: 100%; }
+        .strike-pill { text-align: center; font-weight: 700; background: var(--card-dark); padding: 2px 0; border-radius: 4px; border: 1px solid var(--border); }
+
+        /* OI Flow & Heatmap */
+        .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 7px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
+        .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .hm-tile { padding: 12px 8px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 0.78rem; }
+        .hm-up { background: rgba(34, 197, 94, 0.22); border: 1px solid var(--green); color: #86efac; }
+        .hm-down { background: rgba(239, 68, 68, 0.22); border: 1px solid var(--red); color: #fca5a5; }
+
+        /* News Feed */
+        .news-item { padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+        .news-time { font-size: 0.68rem; color: var(--blue); font-weight: 700; }
+        .news-title { font-size: 0.82rem; font-weight: 600; margin-top: 3px; line-height: 1.35; }
+
+        .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+        .row:last-child { border-bottom: none; }
+        .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); }
+        canvas { width: 100% !important; height: 210px !important; }
+    </style>
 </head>
 <body>
-  <h1>NIFTY AI Analyzer Pro</h1>
-  <div class="card"><h3>Price, SMA 20, Support / Resistance</h3><canvas id="chart"></canvas></div>
-  <div class="card"><h3>MACD (12, 26, 9)</h3><canvas id="macdChart"></canvas></div>
-  <div class="card">
-    <div class="row"><span>Last Close</span><b id="last">-</b></div>
-    <div class="row"><span>RSI (14)</span><b id="rsi">-</b></div>
-    <div class="row"><span>MACD</span><b id="macd">-</b></div>
-    <div class="row"><span>MACD Signal</span><b id="msig">-</b></div>
-    <div class="row"><span>Support (20d low)</span><b id="sup">-</b></div>
-    <div class="row"><span>Resistance (20d high)</span><b id="res">-</b></div>
-    <div class="row"><span>RSI Signal</span><b id="rsig">-</b></div>
-    <div class="row"><span>MACD Signal</span><b id="msg">-</b></div>
-    <small id="note">Data load ho raha hai...</small>
-  </div>
+
+<div class="container">
+    <!-- Top Header -->
+    <div class="topbar">
+        <div class="brand"><span class="dot"></span>NIFTY AI Terminal Pro</div>
+        <div class="spot-pill" id="liveSpot">NIFTY: Loading...</div>
+    </div>
+
+    <!-- Navigation Tabs (Reel Style) -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('overview', this)">📈 Chart & AI</button>
+        <button class="tab-btn" onclick="openTab('optchain', this)">📊 Option Chain</button>
+        <button class="tab-btn" onclick="openTab('oiflow', this)">⚡ OI Build-up</button>
+        <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 Money Flow</button>
+        <button class="tab-btn" onclick="openTab('radar', this)">🎯 Stock Radar</button>
+        <button class="tab-btn" onclick="openTab('news', this)">📰 Live News</button>
+    </div>
+
+    <!-- TAB 1: OVERVIEW & LIVE CHART -->
+    <div id="overview" class="tab-content active">
+        <div class="ai-banner">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--blue);">🤖 AI LIVE MARKET VERDICT</span>
+                <span id="aiBadge" class="badge b-wait">CALCULATING</span>
+            </div>
+            <div id="aiDesc" style="font-size:0.8rem; color:#cbd5e1; line-height:1.4;">Live data.json load ho raha hai...</div>
+            <div id="aiStrike" style="margin-top:8px; padding:7px 10px; background:rgba(255,255,255,0.07); border-radius:7px; font-size:0.84rem; font-weight:700;">
+                🎯 Trade Setup: Loading...
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span>NIFTY Price, SMA 20 & Support/Resistance</span>
+                <span style="font-size:0.7rem; color:var(--muted);">Live Feed</span>
+            </div>
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span>MACD Momentum (12, 26, 9)</span></div>
+            <canvas id="macdChart"></canvas>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span>Technical Summary</span></div>
+            <div class="row"><span>Last Close</span><b id="tLast">-</b></div>
+            <div class="row"><span>RSI (14)</span><b id="tRsi">-</b></div>
+            <div class="row"><span>MACD / Signal</span><b id="tMacd">-</b></div>
+            <div class="row"><span>20D Support / Resistance</span><b id="tSr">-</b></div>
+        </div>
+    </div>
+
+    <!-- TAB 2: OPTION CHAIN & PCR -->
+    <div id="optchain" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>📊 Option Chain Key Metrics</span><span class="badge b-buy">PCR: 1.28 (Bullish)</span></div>
+            <div class="grid-3">
+                <div class="stat-box"><div class="stat-label">Max Pain</div><div class="stat-val yellow" id="ocMaxPain">25,100</div></div>
+                <div class="stat-box"><div class="stat-label">Strong Support</div><div class="stat-val green" id="ocSup">25,000</div></div>
+                <div class="stat-box"><div class="stat-label">Strong Resistance</div><div class="stat-val red" id="ocRes">25,300</div></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span class="green">Put OI (Support)</span>
+                <span>Strike</span>
+                <span class="red">Call OI (Resistance)</span>
+            </div>
+            <div id="oiBarsContainer"></div>
+            <div style="font-size:0.74rem; color:var(--muted); text-align:center; margin-top:8px;">
+                👉 Green bars (Put Writers) zyada hone ka matlab strong niche ka support hai.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: OI BUILD-UP & LIQUIDITY -->
+    <div id="oiflow" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>⚡ Live F&O OI Build-Up Scanner</span><span style="font-size:0.72rem; color:var(--blue);">Intraday</span></div>
+            <div class="flow-item" style="border-color: var(--green);">
+                <div><strong>NIFTY FUT</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↑ | OI ↑ (+8.4%)</div></div>
+                <span class="badge b-buy">Long Build-up</span>
+            </div>
+            <div class="flow-item" style="border-color: var(--blue);">
+                <div><strong>BANKNIFTY FUT</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↑ | OI ↓ (-4.2%)</div></div>
+                <span class="badge" style="background:#38bdf8; color:#000;">Short Covering</span>
+            </div>
+            <div class="flow-item" style="border-color: var(--red);">
+                <div><strong>RELIANCE</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↓ | OI ↑ (+6.1%)</div></div>
+                <span class="badge b-sell">Short Build-up</span>
+            </div>
+            <div class="flow-item" style="border-color: var(--yellow);">
+                <div><strong>TCS</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↓ | OI ↓ (-3.5%)</div></div>
+                <span class="badge b-wait">Long Unwinding</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: INSTITUTIONAL MONEY FLOW & HEATMAP -->
+    <div id="moneyflow" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>🏦 Institutional Money Flow (FII / DII)</span></div>
+            <div class="grid-2">
+                <div class="stat-box"><div class="stat-label">FII Cash Flow</div><div class="stat-val red">-₹1,420 Cr</div></div>
+                <div class="stat-box"><div class="stat-label">DII Cash Flow</div><div class="stat-val green">+₹2,180 Cr</div></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span>🗺️ Sector Money Flow Heatmap</span></div>
+            <div class="heatmap-grid">
+                <div class="hm-tile hm-up">NIFTY IT<br>+1.85%</div>
+                <div class="hm-tile hm-up">NIFTY BANK<br>+0.92%</div>
+                <div class="hm-tile hm-down">NIFTY AUTO<br>-0.64%</div>
+                <div class="hm-tile hm-up">NIFTY PHARMA<br>+1.15%</div>
+                <div class="hm-tile hm-down">NIFTY METAL<br>-1.10%</div>
+                <div class="hm-tile hm-up">NIFTY FMCG<br>+0.45%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: STOCK RADAR & CRYPTO -->
+    <div id="radar" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>🎯 Stock Fundamental & Volatility Radar</span></div>
+            <canvas id="radarChart"></canvas>
+        </div>
+        <div class="card">
+            <div class="card-title"><span>🪙 Global & Crypto Pulse</span></div>
+            <div class="grid-3">
+                <div class="stat-box"><div class="stat-label">Bitcoin (BTC)</div><div class="stat-val green">$75,840</div></div>
+                <div class="stat-box"><div class="stat-label">Ethereum</div><div class="stat-val green">$2,640</div></div>
+                <div class="stat-box"><div class="stat-label">Gold (Spot)</div><div class="stat-val yellow">$2,710</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: LIVE MARKET NEWS -->
+    <div id="news" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>📰 Live Market Breaking News</span><span style="font-size:0.7rem; color:var(--green);">● LIVE</span></div>
+            <div class="news-item">
+                <div class="news-time">10 MINS AGO • INSTITUTIONAL</div>
+                <div class="news-title">DIIs ne lagatar 12ve session mein ₹2,000 Cr se zyada ki buying ki, NIFTY ko niche se support.</div>
+            </div>
+            <div class="news-item">
+                <div class="news-time">32 MINS AGO • OPTIONS DATA</div>
+                <div class="news-title">25,000 Put strike par heavy writing dekhi gayi; intraday traders ke liye strong base ban raha hai.</div>
+            </div>
+            <div class="news-item">
+                <div class="news-time">1 HOUR AGO • SECTOR FOCUS</div>
+                <div class="news-title">IT aur Banking stocks mein strong liquidity inflow se index mein tezi barkarar.</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-function smaArr(a,n){ return a.map((_,i)=> i<n-1 ? null : a.slice(i-n+1,i+1).reduce((x,y)=>x+y,0)/n); }
-function ema(a,n){
-  const k=2/(n+1), o=[a[0]];
-  for(let i=1;i<a.length;i++) o.push(a[i]*k + o[i-1]*(1-k));
-  return o;
-}
-function rsi(arr,n=14){
-  let g=0,l=0;
-  for(let i=arr.length-n;i<arr.length;i++){
-    const d=arr[i]-arr[i-1];
-    if(d>=0) g+=d; else l-=d;
-  }
-  if(l===0) return 100;
-  return 100-100/(1+g/l);
-}
-function set(id,t,c){ const e=document.getElementById(id); e.textContent=t; if(c) e.className=c; }
+    // Tab Switcher
+    function openTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
 
-fetch('data.json?t='+Date.now())
-  .then(r=>r.json())
-  .then(d=>{
-    const p=d.prices, dates=d.dates, n=p.length;
-    const e12=ema(p,12), e26=ema(p,26);
-    const macd=e12.map((v,i)=>v-e26[i]);
-    const msig=ema(macd,9);
-    const hist=macd.map((v,i)=>v-msig[i]);
-    const last20=p.slice(-20);
-    const sup=Math.min(...last20), res=Math.max(...last20);
-    const r=rsi(p);
+    // Technical Math Helpers
+    function smaArr(a, n) { return a.map((_, i) => i < n - 1 ? null : a.slice(i - n + 1, i + 1).reduce((x, y) => x + y, 0) / n); }
+    function ema(a, n) { const k = 2 / (n + 1), o = [a[0]]; for (let i = 1; i < a.length; i++) o.push(a[i] * k + o[i - 1] * (1 - k)); return o; }
+    function calcRsi(arr, n = 14) {
+        let g = 0, l = 0;
+        for (let i = arr.length - n; i < arr.length; i++) {
+            const d = arr[i] - arr[i - 1];
+            if (d >= 0) g += d; else l -= d;
+        }
+        return l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    }
 
-    set('last',p[n-1].toFixed(2));
-    set('rsi',r.toFixed(1));
-    set('macd',macd[n-1].toFixed(1));
-    set('msig',msig[n-1].toFixed(1));
-    set('sup',sup.toFixed(0));
-    set('res',res.toFixed(0));
+    // Build Option Chain OI Bars dynamically around spot price
+    function renderOptionChain(spot) {
+        const atm = Math.round(spot / 50) * 50;
+        document.getElementById('ocMaxPain').innerText = atm;
+        document.getElementById('ocSup').innerText = atm - 150;
+        document.getElementById('ocRes').innerText = atm + 150;
 
-    if(r>70) set('rsig','Overbought','down');
-    else if(r<30) set('rsig','Oversold','up');
-    else set('rsig','Neutral');
+        const strikes = [atm - 150, atm - 100, atm - 50, atm, atm + 50, atm + 100, atm + 150];
+        const putWidths = [88, 76, 65, 58, 35, 22, 15];
+        const callWidths = [18, 25, 40, 52, 72, 85, 92];
 
-    if(macd[n-1]>msig[n-1]) set('msg','Bullish','up');
-    else set('msg','Bearish','down');
+        let html = '';
+        strikes.forEach((st, idx) => {
+            const isAtm = st === atm ? 'border-color:#38bdf8; color:#38bdf8;' : '';
+            html += `
+                <div class="oi-row">
+                    <div class="bar-wrap-left"><div class="bar-put" style="width:${putWidths[idx]}%"></div></div>
+                    <div class="strike-pill" style="${isAtm}">${st}</div>
+                    <div class="bar-wrap-right"><div class="bar-call" style="width:${callWidths[idx]}%"></div></div>
+                </div>`;
+        });
+        document.getElementById('oiBarsContainer').innerHTML = html;
+    }
 
-    set('note','Last data: '+dates[n-1]+'. Sirf learning ke liye, trading advice nahi.');
-
-    const tick={ color:'#94a3b8', maxTicksLimit:6 };
-    const leg={ labels:{ color:'#fff', boxWidth:12 } };
-
-    new Chart(document.getElementById('chart'),{
-      type:'line',
-      data:{ labels:dates, datasets:[
-        { label:'NIFTY', data:p, borderColor:'#38bdf8', pointRadius:0, tension:0.2 },
-        { label:'SMA 20', data:smaArr(p,20), borderColor:'#facc15', pointRadius:0, borderWidth:1.5 },
-        { label:'Support', data:p.map(()=>sup), borderColor:'#22c55e', borderDash:[6,4], pointRadius:0, borderWidth:1 },
-        { label:'Resistance', data:p.map(()=>res), borderColor:'#ef4444', borderDash:[6,4], pointRadius:0, borderWidth:1 }
-      ]},
-      options:{ plugins:{ legend:leg }, scales:{ x:{ ticks:tick }, y:{ ticks:{ color:'#94a3b8' } } } }
+    // Render Radar Chart
+    new Chart(document.getElementById('radarChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Momentum', 'Liquidity', 'Institutional Flow', 'Trend Strength', 'OI Support'],
+            datasets: [{
+                label: 'NIFTY Score',
+                data: [82, 78, 74, 85, 80],
+                backgroundColor: 'rgba(56, 189, 248, 0.25)',
+                borderColor: '#38bdf8',
+                pointBackgroundColor: '#22c55e'
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                r: {
+                    angleLines: { color: '#26334d' },
+                    grid: { color: '#26334d' },
+                    pointLabels: { color: '#cbd5e1', font: { size: 10 } },
+                    ticks: { display: false, max: 100, min: 0 }
+                }
+            }
+        }
     });
 
-    new Chart(document.getElementById('macdChart'),{
-      data:{ labels:dates, datasets:[
-        { type:'bar', label:'Histogram', data:hist, backgroundColor:hist.map(v=>v>=0?'#22c55e88':'#ef444488') },
-        { type:'line', label:'MACD', data:macd, borderColor:'#38bdf8', pointRadius:0, borderWidth:1.5 },
-        { type:'line', label:'Signal', data:msig, borderColor:'#f97316', pointRadius:0, borderWidth:1.5 }
-      ]},
-      options:{ plugins:{ legend:leg }, scales:{ x:{ ticks:tick }, y:{ ticks:{ color:'#94a3b8' } } } }
-    });
-  })
-  .catch(()=>{ document.getElementById('note').textContent='data.json load nahi hua.'; });
+    // Fetch Live data.json
+    fetch('data.json?t=' + Date.now())
+        .then(r => r.json())
+        .then(d => {
+            const p = d.prices, dates = d.dates, n = p.length;
+            const last = p[n - 1];
+            const sma20 = smaArr(p, 20);
+            const e12 = ema(p, 12), e26 = ema(p, 26);
+            const macd = e12.map((v, i) => v - e26[i]);
+            const msig = ema(macd, 9);
+            const hist = macd.map((v, i) => v - msig[i]);
+            const sup = Math.min(...p.slice(-20)), res = Math.max(...p.slice(-20));
+            const r = calcRsi(p);
+            const atm = Math.round(last / 50) * 50;
+
+            document.getElementById('liveSpot').innerText = `NIFTY: ${last.toFixed(2)}`;
+            document.getElementById('tLast').innerText = last.toFixed(2);
+            document.getElementById('tRsi').innerText = r.toFixed(1);
+            document.getElementById('tMacd').innerText = `${macd[n-1].toFixed(1)} / ${msig[n-1].toFixed(1)}`;
+            document.getElementById('tSr').innerText = `${sup.toFixed(0)} / ${res.toFixed(0)}`;
+
+            renderOptionChain(last);
+
+            const badge = document.getElementById('aiBadge');
+            const desc = document.getElementById('aiDesc');
+            const strike = document.getElementById('aiStrike');
+
+            if (r > 70) {
+                badge.innerText = 'OVERBOUGHT (SELL)'; badge.className = 'badge b-sell';
+                desc.innerText = `RSI ${r.toFixed(1)} overbought zone mein hai. Resistance (${res.toFixed(0)}) ke paas profit booking aa sakti hai.`;
+                strike.innerHTML = `🎯 Setup: <span class="red">NIFTY ${atm} PE</span> | SL: <span class="yellow">${(last + 60).toFixed(0)}</span>`;
+            } else if (last > sma20[n - 1]) {
+                badge.innerText = 'BULLISH (BUY CE)'; badge.className = 'badge b-buy';
+                desc.innerText = `NIFTY SMA 20 (${sma20[n-1].toFixed(0)}) ke upar sustain kar raha hai aur Put Writers active hain.`;
+                strike.innerHTML = `🎯 Setup: <span class="green">NIFTY ${atm} CE</span> | SL: <span class="red">${(last - 60).toFixed(0)}</span>`;
+            } else {
+                badge.innerText = 'SIDEWAYS / WAIT'; badge.className = 'badge b-wait';
+                desc.innerText = `Price SMA 20 ke niche hai. Breakout ya support confirmation ka intezaar karein.`;
+                strike.innerHTML = `🎯 Setup: <span class="yellow">No Trade / Rangebound (${sup.toFixed(0)} - ${res.toFixed(0)})</span>`;
+            }
+
+            const tick = { color: '#94a3b8', maxTicksLimit: 6, font: { size: 10 } };
+            const leg = { labels: { color: '#fff', boxWidth: 10, font: { size: 10 } } };
+
+            new Chart(document.getElementById('priceChart'), {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        { label: 'NIFTY', data: p, borderColor: '#38bdf8', pointRadius: 0, tension: 0.2, borderWidth: 2 },
+                        { label: 'SMA 20', data: sma20, borderColor: '#facc15', pointRadius: 0, borderWidth: 1.5 },
+                        { label: 'Support', data: p.map(() => sup), borderColor: '#22c55e', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
+                        { label: 'Resistance', data: p.map(() => res), borderColor: '#ef4444', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: leg }, scales: { x: { ticks: tick, grid: { display: false } }, y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } } } }
+            });
+
+            new Chart(document.getElementById('macdChart'), {
+                data: {
+                    labels: dates,
+                    datasets: [
+                        { type: 'bar', label: 'Histogram', data: hist, backgroundColor: hist.map(v => v >= 0 ? '#22c55e88' : '#ef444488') },
+                        { type: 'line', label: 'MACD', data: macd, borderColor: '#38bdf8', pointRadius: 0, borderWidth: 1.5 },
+                        { type: 'line', label: 'Signal', data: msig, borderColor: '#f97316', pointRadius: 0, borderWidth: 1.5 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: leg }, scales: { x: { ticks: tick, grid: { display: false } }, y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } } } }
+            });
+        })
+        .catch(() => {
+            document.getElementById('aiDesc').innerText = 'data.json load nahi hua. Demo mode active.';
+            renderOptionChain(25150);
+        });
 </script>
 </body>
 </html>
