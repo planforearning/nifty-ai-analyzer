@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIFTY & F&O AI Terminal Pro</title>
+    <title>NIFTY & F&O Master Terminal Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
@@ -33,7 +33,6 @@
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
         .card-title { font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 10px; border-radius: 9px; }
         .stat-label { font-size: 0.68rem; color: var(--muted); }
         .stat-val { font-size: 0.9rem; font-weight: 800; margin-top: 3px; }
@@ -72,7 +71,7 @@
     <!-- Top Header -->
     <div class="topbar">
         <div class="brand"><span class="dot"></span>NIFTY & F&O Master Terminal</div>
-        <div class="spot-pill" id="liveSpot">₹5k Scalper Ready</div>
+        <div class="spot-pill" id="liveSpot">Nov 2026 Lot Sizes Active</div>
     </div>
 
     <!-- Navigation Tabs -->
@@ -88,14 +87,14 @@
     <div id="scalp" class="tab-content active">
         <div class="trade-card">
             <div class="trade-header">
-                <span style="font-size:0.76rem; font-weight:800; color:var(--green);">⚡ NIFTY SCALPING (₹5K FIT)</span>
+                <span style="font-size:0.76rem; font-weight:800; color:var(--green);">⚡ NIFTY SCALPING (Lot Size: 65)</span>
                 <span class="badge b-buy">STRONG BUY (CE)</span>
             </div>
             <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-bottom:4px;">
-                NIFTY 25,200 CE (1 Lot = 25 Qty)
+                NIFTY 25,200 CE (1 Lot = 65 Qty)
             </div>
             <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.35;">
-                Spot: 25,180.50 | Put Writers strong support at 25,000. Capital Needed: <strong class="yellow">~₹2,250</strong>
+                Spot: 25,180.50 | Put Writers strong support at 25,000. Capital Needed: <strong class="yellow">~₹5,500</strong>
             </div>
             <div class="trade-grid">
                 <div class="t-pill">
@@ -138,44 +137,39 @@
         </div>
     </div>
 
-    <!-- TAB 2: F&O MASTER LIST & LOT SIZES (SCREENSHOT MATCHED) -->
+    <!-- TAB 2: F&O MASTER LIST & UPDATED LOT SIZES (NOV 2026) -->
     <div id="fnotable" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>📋 NSE F&O Master List & Lot Sizes</span><span style="font-size:0.7rem; color:var(--blue);">Searchable</span></div>
-            <input type="text" id="fnoSearch" class="search-input" placeholder="🔍 Search F&O Symbol (e.g. NIFTY, ABB, RELIANCE)..." onkeyup="filterFnoTable()">
+            <div class="card-title"><span>📋 NSE F&O Master List (Nov 2026)</span><span style="font-size:0.7rem; color:var(--blue);">Updated</span></div>
+            <input type="text" id="fnoSearch" class="search-input" placeholder="🔍 Search F&O Symbol (e.g. NIFTY, BANKNIFTY, ABB)..." onkeyup="filterFnoTable()">
             
-            <div style="overflow-x: auto; max-height: 380px;">
+            <div style="overflow-x: auto; max-height: 400px;">
                 <table class="fno-table" id="fnoTableList">
                     <thead>
                         <tr>
                             <th>Symbol</th>
                             <th>Segment</th>
-                            <th>Lot Size</th>
+                            <th>Lot Size (Nov 2026)</th>
                             <th>Action / Bias</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><strong>BANKNIFTY</strong></td><td>Index F&O</td><td>15</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>FINNIFTY</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>MIDCPNIFTY</strong></td><td>Index F&O</td><td>50</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>NIFTY</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>NIFTYFIN</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">HOLD</span></td></tr>
-                        <tr><td><strong>NIFTYNXT50</strong></td><td>Index F&O</td><td>10</td><td><span class="badge b-buy">BULLISH</span></td></tr>
+                        <tr><td><strong>BANKNIFTY</strong></td><td>Index F&O</td><td>30</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>FINNIFTY</strong></td><td>Index F&O</td><td>60</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>MIDCPNIFTY</strong></td><td>Index F&O</td><td>120</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>NIFTY</strong></td><td>Index F&O</td><td>65</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>NIFTYFPI</strong></td><td>Index F&O</td><td>1100</td><td><span class="badge b-buy">HOLD</span></td></tr>
+                        <tr><td><strong>NIFTYNXT50</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BULLISH</span></td></tr>
                         <tr><td><strong>360ONE</strong></td><td>Stock F&O</td><td>500</td><td><span class="badge b-buy">LONG</span></td></tr>
                         <tr><td><strong>ABB</strong></td><td>Stock F&O</td><td>125</td><td><span class="badge b-buy">BUY</span></td></tr>
-                        <tr><td><strong>ABCAPITAL</strong></td><td>Stock F&O</td><td>1500</td><td><span class="badge b-buy">BUY</span></td></tr>
-                        <tr><td><strong>ADANIENSOL</strong></td><td>Stock F&O</td><td>500</td><td><span class="badge b-sell">SELL</span></td></tr>
-                        <tr><td><strong>ADANIENT</strong></td><td>Stock F&O</td><td>300</td><td><span class="badge b-buy">BUY</span></td></tr>
-                        <tr><td><strong>RELIANCE</strong></td><td>Stock F&O</td><td>250</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>INFY</strong></td><td>Stock F&O</td><td>400</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>TCS</strong></td><td>Stock F&O</td><td>175</td><td><span class="badge b-sell">SELL PE</span></td></tr>
-                        <tr><td><strong>SBIN</strong></td><td>Stock F&O</td><td>750</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>TATASTEEL</strong></td><td>Stock F&O</td><td>5500</td><td><span class="badge b-sell">SELL PE</span></td></tr>
+                        <tr><td><strong>ABCAPITAL</strong></td><td>Stock F&O</td><td>1550</td><td><span class="badge b-buy">BUY</span></td></tr>
+                        <tr><td><strong>ADANIENSOL</strong></td><td>Stock F&O</td><td>675</td><td><span class="badge b-sell">SELL</span></td></tr>
+                        <tr><td><strong>ADANIENT</strong></td><td>Stock F&O</td><td>309</td><td><span class="badge b-buy">BUY</span></td></tr>
                     </tbody>
                 </table>
             </div>
             <div style="font-size:0.72rem; color:var(--muted); text-align:center; margin-top:8px;">
-                👉 Aap upar search box mein kisi bhi stock ya index ka naam type karke uska lot size dekh sakte hain.
+                👉 Screenshot ke mutabiq saare November 2026 lot sizes update kar diye gaye hain[span_2](start_span)[span_2](end_span).
             </div>
         </div>
     </div>
@@ -215,8 +209,8 @@
         <div class="card">
             <div class="card-title"><span>📰 Market News & F&O Updates</span></div>
             <div class="news-item" style="padding:10px; background:var(--card-dark); border-radius:8px; margin-bottom:8px;">
-                <div class="news-time" style="font-size:0.68rem; color:var(--blue); font-weight:700;">F&O UPDATE</div>
-                <div class="news-title" style="font-size:0.82rem; font-weight:600; margin-top:3px;">NSE F&O lot sizes updated for current expiry contracts. Small capital traders NIFTY & FINNIFTY ko prefer karein.</div>
+                <div class="news-time" style="font-size:0.68rem; color:var(--blue); font-weight:700;">NOV 2026 F&O UPDATE</div>
+                <div class="news-title" style="font-size:0.82rem; font-weight:600; margin-top:3px;">NIFTY lot size is now 65[span_3](start_span)[span_3](end_span), BANKNIFTY is 30[span_4](start_span)[span_4](end_span), and FINNIFTY is 60[span_5](start_span)[span_5](end_span) as per latest exchange revisions.</div>
             </div>
         </div>
     </div>
@@ -230,7 +224,6 @@
         btn.classList.add('active');
     }
 
-    // Search filter for F&O table
     function filterFnoTable() {
         let input = document.getElementById('fnoSearch').value.toUpperCase();
         let table = document.getElementById('fnoTableList');
