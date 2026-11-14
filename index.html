@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg: #0b1120; --card: #151f32; --card-dark: #0f172a; --border: #26334d;
-            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308;
+            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308; --purple: #a855f7;
         }
         * { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
@@ -35,15 +35,22 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 10px; border-radius: 9px; }
-        .stat-label { font-size: 0.7rem; color: var(--muted); }
-        .stat-val { font-size: 0.95rem; font-weight: 800; margin-top: 3px; }
+        .stat-label { font-size: 0.68rem; color: var(--muted); }
+        .stat-val { font-size: 0.92rem; font-weight: 800; margin-top: 3px; }
 
-        /* AI Signal Banner */
-        .ai-banner { background: linear-gradient(135deg, #172554, #151f32); border: 1px solid #3b82f6; border-radius: 12px; padding: 13px; margin-bottom: 12px; }
-        .badge { padding: 3px 9px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        /* Scalping & AI Trade Card */
+        .trade-card { background: linear-gradient(145deg, #0f291e, #151f32); border: 1px solid var(--green); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .trade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .trade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .t-pill { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px; text-align: center; }
+        .t-pill span { display: block; font-size: 0.68rem; color: var(--muted); }
+        .t-pill strong { font-size: 0.92rem; margin-top: 2px; display: block; }
+
+        .badge { padding: 3px 9px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; }
         .b-buy { background: var(--green); color: #000; }
         .b-sell { background: var(--red); color: #fff; }
         .b-wait { background: var(--yellow); color: #000; }
+        .b-blue { background: var(--blue); color: #000; }
 
         /* Option Chain Strike Bars */
         .oi-row { display: grid; grid-template-columns: 1fr 62px 1fr; align-items: center; gap: 6px; margin-bottom: 7px; font-size: 0.75rem; }
@@ -53,8 +60,8 @@
         .bar-call { background: var(--red); height: 100%; }
         .strike-pill { text-align: center; font-weight: 700; background: var(--card-dark); padding: 2px 0; border-radius: 4px; border: 1px solid var(--border); }
 
-        /* OI Flow & Heatmap */
-        .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 7px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
+        /* Flow & Stock Scanner */
+        .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
         .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .hm-tile { padding: 12px 8px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 0.78rem; }
         .hm-up { background: rgba(34, 197, 94, 0.22); border: 1px solid var(--green); color: #86efac; }
@@ -65,10 +72,10 @@
         .news-time { font-size: 0.68rem; color: var(--blue); font-weight: 700; }
         .news-title { font-size: 0.82rem; font-weight: 600; margin-top: 3px; line-height: 1.35; }
 
-        .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+        .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
         .row:last-child { border-bottom: none; }
-        .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); }
-        canvas { width: 100% !important; height: 210px !important; }
+        .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); } .blue { color: var(--blue); }
+        canvas { width: 100% !important; height: 205px !important; }
     </style>
 </head>
 <body>
@@ -82,131 +89,200 @@
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('overview', this)">📈 Chart & AI</button>
-        <button class="tab-btn" onclick="openTab('optchain', this)">📊 Option Chain</button>
-        <button class="tab-btn" onclick="openTab('oiflow', this)">⚡ OI Build-up</button>
-        <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 Money Flow</button>
-        <button class="tab-btn" onclick="openTab('radar', this)">🎯 Stock Radar</button>
+        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ ₹5k Scalping & AI</button>
+        <button class="tab-btn" onclick="openTab('global', this)">🌍 Global Markets</button>
+        <button class="tab-btn" onclick="openTab('optchain', this)">📊 Option Buy/Sell</button>
+        <button class="tab-btn" onclick="openTab('stocks', this)">🎯 Stock Opportunities</button>
+        <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 FII/DII Flow</button>
         <button class="tab-btn" onclick="openTab('news', this)">📰 Live News</button>
     </div>
 
-    <!-- TAB 1: OVERVIEW & LIVE CHART -->
-    <div id="overview" class="tab-content active">
-        <div class="ai-banner">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                <span style="font-size:0.78rem; font-weight:700; color:var(--blue);">🤖 AI LIVE MARKET VERDICT</span>
-                <span id="aiBadge" class="badge b-buy">BULLISH (BUY CE)</span>
+    <!-- TAB 1: SCALPING SETUP, ENTRY/EXIT/SL & CHART -->
+    <div id="scalp" class="tab-content active">
+        <!-- ₹5K CAPITAL SCALPING OPPORTUNITY CARD -->
+        <div class="trade-card">
+            <div class="trade-header">
+                <span style="font-size:0.78rem; font-weight:800; color:var(--green);">⚡ BEST SCALPING SETUP (₹5K CAPITAL)</span>
+                <span class="badge b-buy">STRONG BUY (CE)</span>
             </div>
-            <div id="aiDesc" style="font-size:0.8rem; color:#cbd5e1; line-height:1.4;">NIFTY SMA 20 ke upar sustain kar raha hai aur institutional Put Writing strong support bana rahi hai.</div>
-            <div id="aiStrike" style="margin-top:8px; padding:7px 10px; background:rgba(255,255,255,0.07); border-radius:7px; font-size:0.84rem; font-weight:700;">
-                🎯 Setup: <span class="green">NIFTY 25,200 CE</span> | SL: <span class="red">25,120</span>
+            <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-bottom:4px;">
+                NIFTY 25,200 CE (1 Lot = 25 Qty)
+            </div>
+            <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.35;">
+                Logic: NIFTY 25,150 ke upar sustain kar raha hai + Put Writers heavy support bana rahe hain. Capital Required: <strong class="yellow">~₹2,250</strong>
+            </div>
+            <div class="trade-grid">
+                <div class="t-pill">
+                    <span>ENTRY PRICE</span>
+                    <strong class="blue">₹88 - ₹92</strong>
+                </div>
+                <div class="t-pill">
+                    <span>EXIT / TARGET</span>
+                    <strong class="green">₹115 - ₹125</strong>
+                </div>
+                <div class="t-pill">
+                    <span>STOP LOSS (SL)</span>
+                    <strong class="red">₹76 (Strict)</strong>
+                </div>
             </div>
         </div>
 
+        <!-- WHERE BUYING VS SELLING IS HAPPENING -->
+        <div class="card">
+            <div class="card-title"><span>🔍 Live Market Zone: Kahan Buying / Selling Ho Rahi Hai?</span></div>
+            <div class="grid-2">
+                <div class="stat-box" style="border-color: var(--green);">
+                    <div class="stat-label">🟢 Heavy Buying Zone (Support)</div>
+                    <div class="stat-val green">25,000 - 25,100</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Put Writers active hain; yahan se bounce aane ka high chance hai.</div>
+                </div>
+                <div class="stat-box" style="border-color: var(--red);">
+                    <div class="stat-label">🔴 Heavy Selling Zone (Resistance)</div>
+                    <div class="stat-val red">25,300 - 25,350</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Call Writers selling kar rahe hain; yahan profit book karein.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE CHART -->
         <div class="card">
             <div class="card-title">
-                <span>NIFTY Price, SMA 20 & Support/Resistance</span>
-                <span style="font-size:0.7rem; color:var(--green);">● Live Feed</span>
+                <span>NIFTY Price, SMA 20 & Key Levels</span>
+                <span style="font-size:0.7rem; color:var(--green);">● Trend: Bullish</span>
             </div>
             <canvas id="priceChart"></canvas>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="card-title"><span>MACD Momentum (12, 26, 9)</span></div>
-            <canvas id="macdChart"></canvas>
+    <!-- TAB 2: GLOBAL MARKETS & FUTURE DIRECTION -->
+    <div id="global" class="tab-content">
+        <div class="card" style="border-color: var(--blue);">
+            <div class="card-title">
+                <span>🔮 Future Market Opening Prediction</span>
+                <span class="badge b-buy">GAP UP (+85 Pts)</span>
+            </div>
+            <div style="font-size:0.78rem; color:#cbd5e1; line-height:1.4;">
+                GIFT NIFTY aur US NASDAQ dono positive zone mein trade kar rahe hain. Dollar Index (DXY) kamzor hone se Indian market mein foreign buying badh sakti hai.
+            </div>
         </div>
 
         <div class="card">
-            <div class="card-title"><span>Technical Summary</span></div>
-            <div class="row"><span>Last Close</span><b>25,180.50</b></div>
-            <div class="row"><span>RSI (14)</span><b>64.2 (Strong)</b></div>
-            <div class="row"><span>MACD / Signal</span><b>+42.5 / +31.0</b></div>
-            <div class="row"><span>20D Support / Resistance</span><b>25,000 / 25,350</b></div>
+            <div class="card-title"><span>🌍 Global Indices & Future Cues</span></div>
+            <div class="flow-item" style="border-color: var(--green);">
+                <div><strong>GIFT NIFTY (Future)</strong><div style="font-size:0.7rem; color:var(--muted);">Indian Market Opening Indicator</div></div>
+                <div style="text-align:right;"><strong class="green">25,265.00</strong><div style="font-size:0.7rem;" class="green">+0.38% ↑</div></div>
+            </div>
+            <div class="flow-item" style="border-color: var(--green);">
+                <div><strong>NASDAQ (US Tech)</strong><div style="font-size:0.7rem; color:var(--muted);">Affects NIFTY IT & Sentiment</div></div>
+                <div style="text-align:right;"><strong class="green">19,280.40</strong><div style="font-size:0.7rem;" class="green">+0.72% ↑</div></div>
+            </div>
+            <div class="flow-item" style="border-color: var(--green);">
+                <div><strong>DOW JONES (US Market)</strong><div style="font-size:0.7rem; color:var(--muted);">Global Institutional Trend</div></div>
+                <div style="text-align:right;"><strong class="green">43,910.15</strong><div style="font-size:0.7rem;" class="green">+0.45% ↑</div></div>
+            </div>
+            <div class="flow-item" style="border-color: var(--yellow);">
+                <div><strong>INDIA VIX (Fear Index)</strong><div style="font-size:0.7rem; color:var(--muted);">Below 15 = Safe for Option Buyers</div></div>
+                <div style="text-align:right;"><strong class="yellow">13.85</strong><div style="font-size:0.7rem;" class="green">-2.10% (Stable)</div></div>
+            </div>
+            <div class="flow-item" style="border-color: var(--blue);">
+                <div><strong>USD / INR & Crude Oil</strong><div style="font-size:0.7rem; color:var(--muted);">Brent Crude: $72.40 (Low = Good)</div></div>
+                <div style="text-align:right;"><strong class="blue">₹84.38</strong><div style="font-size:0.7rem;" class="muted">Neutral</div></div>
+            </div>
         </div>
     </div>
 
-    <!-- TAB 2: OPTION CHAIN & PCR -->
+    <!-- TAB 3: OPTION CHAIN BUYING VS SELLING -->
     <div id="optchain" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>📊 Option Chain Key Metrics</span><span class="badge b-buy">PCR: 1.28 (Bullish)</span></div>
+            <div class="card-title"><span>📊 Option Chain & PCR Strength</span><span class="badge b-buy">PCR: 1.28 (Bullish)</span></div>
             <div class="grid-3">
                 <div class="stat-box"><div class="stat-label">Max Pain</div><div class="stat-val yellow">25,150</div></div>
-                <div class="stat-box"><div class="stat-label">Strong Support</div><div class="stat-val green">25,000</div></div>
-                <div class="stat-box"><div class="stat-label">Strong Resistance</div><div class="stat-val red">25,300</div></div>
+                <div class="stat-box"><div class="stat-label">Put Buying/Writing</div><div class="stat-val green">25,000 PE</div></div>
+                <div class="stat-box"><div class="stat-label">Call Selling Wall</div><div class="stat-val red">25,300 CE</div></div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-title">
-                <span class="green">Put OI (Support)</span>
+                <span class="green">Put Writers (Buying Support)</span>
                 <span>Strike</span>
-                <span class="red">Call OI (Resistance)</span>
+                <span class="red">Call Writers (Selling)</span>
             </div>
             <div id="oiBarsContainer"></div>
-            <div style="font-size:0.74rem; color:var(--muted); text-align:center; margin-top:8px;">
-                👉 Green bars (Put Writers) zyada hone ka matlab strong niche ka support hai.
+            <div style="font-size:0.73rem; color:var(--muted); text-align:center; margin-top:8px;">
+                👉 Jahan Green bar bada hai wahan buyers market ko girne nahi denge. Jahan Red bar bada hai wahan sellers market ko rokenge.
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: OI BUILD-UP & LIQUIDITY -->
-    <div id="oiflow" class="tab-content">
+    <!-- TAB 4: STOCK TRADING OPPORTUNITIES -->
+    <div id="stocks" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>⚡ Live F&O OI Build-Up Scanner</span><span style="font-size:0.72rem; color:var(--blue);">Intraday</span></div>
-            <div class="flow-item" style="border-color: var(--green);">
-                <div><strong>NIFTY FUT</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↑ | OI ↑ (+8.4%)</div></div>
-                <span class="badge b-buy">Long Build-up</span>
+            <div class="card-title"><span>🎯 Intraday & Swing Stock Opportunities</span><span style="font-size:0.7rem; color:var(--blue);">Live Scanner</span></div>
+            
+            <!-- Stock 1 -->
+            <div class="flow-item" style="border-color: var(--green); flex-direction: column; align-items: stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>INFY (Infosys) • <span class="green">BUYING (Long Build-up)</span></strong>
+                    <span class="badge b-buy">BUY</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: NASDAQ rally + Strong volume breakout above 20 EMA.</div>
+                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
+                    <span>Entry: <b class="blue">₹1,865</b></span>
+                    <span>Target: <b class="green">₹1,910</b></span>
+                    <span>SL: <b class="red">₹1,842</b></span>
+                </div>
             </div>
-            <div class="flow-item" style="border-color: var(--blue);">
-                <div><strong>BANKNIFTY FUT</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↑ | OI ↓ (-4.2%)</div></div>
-                <span class="badge" style="background:#38bdf8; color:#000;">Short Covering</span>
+
+            <!-- Stock 2 -->
+            <div class="flow-item" style="border-color: var(--green); flex-direction: column; align-items: stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>HDFCBANK • <span class="green">ACCUMULATION</span></strong>
+                    <span class="badge b-buy">BUY</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: DIIs heavy buying support + BankNifty short covering.</div>
+                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
+                    <span>Entry: <b class="blue">₹1,740</b></span>
+                    <span>Target: <b class="green">₹1,785</b></span>
+                    <span>SL: <b class="red">₹1,718</b></span>
+                </div>
             </div>
-            <div class="flow-item" style="border-color: var(--red);">
-                <div><strong>RELIANCE</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↓ | OI ↑ (+6.1%)</div></div>
-                <span class="badge b-sell">Short Build-up</span>
-            </div>
-            <div class="flow-item" style="border-color: var(--yellow);">
-                <div><strong>TCS</strong><div style="font-size:0.7rem; color:var(--muted);">Price ↓ | OI ↓ (-3.5%)</div></div>
-                <span class="badge b-wait">Long Unwinding</span>
+
+            <!-- Stock 3 -->
+            <div class="flow-item" style="border-color: var(--red); flex-direction: column; align-items: stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>TATASTEEL • <span class="red">SELLING (Short Build-up)</span></strong>
+                    <span class="badge b-sell">SELL</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: Metal sector weakness + Breakdown below key support.</div>
+                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
+                    <span>Entry: <b class="blue">₹146.50</b></span>
+                    <span>Target: <b class="green">₹141.00</b></span>
+                    <span>SL: <b class="red">₹149.20</b></span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 4: INSTITUTIONAL MONEY FLOW & HEATMAP -->
+    <!-- TAB 5: INSTITUTIONAL MONEY FLOW & HEATMAP -->
     <div id="moneyflow" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>🏦 Institutional Money Flow (FII / DII)</span></div>
+            <div class="card-title"><span>🏦 Institutional Cash Flow (FII / DII)</span></div>
             <div class="grid-2">
-                <div class="stat-box"><div class="stat-label">FII Cash Flow</div><div class="stat-val red">-₹1,420 Cr</div></div>
-                <div class="stat-box"><div class="stat-label">DII Cash Flow</div><div class="stat-val green">+₹2,180 Cr</div></div>
+                <div class="stat-box"><div class="stat-label">FII Net Activity</div><div class="stat-val red">-₹1,420 Cr (Selling)</div></div>
+                <div class="stat-box"><div class="stat-label">DII Net Activity</div><div class="stat-val green">+₹2,180 Cr (Buying)</div></div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-title"><span>🗺️ Sector Money Flow Heatmap</span></div>
+            <div class="card-title"><span>🗺️ Sector Buying / Selling Heatmap</span></div>
             <div class="heatmap-grid">
-                <div class="hm-tile hm-up">NIFTY IT<br>+1.85%</div>
-                <div class="hm-tile hm-up">NIFTY BANK<br>+0.92%</div>
-                <div class="hm-tile hm-down">NIFTY AUTO<br>-0.64%</div>
-                <div class="hm-tile hm-up">NIFTY PHARMA<br>+1.15%</div>
-                <div class="hm-tile hm-down">NIFTY METAL<br>-1.10%</div>
-                <div class="hm-tile hm-up">NIFTY FMCG<br>+0.45%</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: STOCK RADAR & CRYPTO -->
-    <div id="radar" class="tab-content">
-        <div class="card">
-            <div class="card-title"><span>🎯 Stock Fundamental & Volatility Radar</span></div>
-            <canvas id="radarChart"></canvas>
-        </div>
-        <div class="card">
-            <div class="card-title"><span>🪙 Global & Crypto Pulse</span></div>
-            <div class="grid-3">
-                <div class="stat-box"><div class="stat-label">Bitcoin (BTC)</div><div class="stat-val green">$75,840</div></div>
-                <div class="stat-box"><div class="stat-label">Ethereum</div><div class="stat-val green">$2,640</div></div>
-                <div class="stat-box"><div class="stat-label">Gold (Spot)</div><div class="stat-val yellow">$2,710</div></div>
+                <div class="hm-tile hm-up">NIFTY IT<br>+1.85% (Buy)</div>
+                <div class="hm-tile hm-up">NIFTY BANK<br>+0.92% (Buy)</div>
+                <div class="hm-tile hm-down">NIFTY AUTO<br>-0.64% (Sell)</div>
+                <div class="hm-tile hm-up">NIFTY PHARMA<br>+1.15% (Buy)</div>
+                <div class="hm-tile hm-down">NIFTY METAL<br>-1.10% (Sell)</div>
+                <div class="hm-tile hm-up">NIFTY FMCG<br>+0.45% (Buy)</div>
             </div>
         </div>
     </div>
@@ -214,18 +290,18 @@
     <!-- TAB 6: LIVE MARKET NEWS -->
     <div id="news" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>📰 Live Market Breaking News</span><span style="font-size:0.7rem; color:var(--green);">● LIVE</span></div>
+            <div class="card-title"><span>📰 Market Moving News & Alerts</span><span style="font-size:0.7rem; color:var(--green);">● LIVE</span></div>
             <div class="news-item">
-                <div class="news-time">10 MINS AGO • INSTITUTIONAL</div>
-                <div class="news-title">DIIs ne lagatar 12ve session mein ₹2,000 Cr se zyada ki buying ki, NIFTY ko niche se support.</div>
+                <div class="news-time">GLOBAL CUES • FUTURE IMPACT</div>
+                <div class="news-title">US Tech stocks mein tezi ke baad GIFT NIFTY 85 points upar; Monday ko positive opening ke sanket.</div>
             </div>
             <div class="news-item">
-                <div class="news-time">32 MINS AGO • OPTIONS DATA</div>
-                <div class="news-title">25,000 Put strike par heavy writing dekhi gayi; intraday traders ke liye strong base ban raha hai.</div>
+                <div class="news-time">OPTIONS DATA • SUPPORT/RESISTANCE</div>
+                <div class="news-title">25,000 Put strike par heavy writing; scalpers ke liye dip par buying karne ka achha mauka.</div>
             </div>
             <div class="news-item">
-                <div class="news-time">1 HOUR AGO • SECTOR FOCUS</div>
-                <div class="news-title">IT aur Banking stocks mein strong liquidity inflow se index mein tezi barkarar.</div>
+                <div class="news-time">INSTITUTIONAL FLOW</div>
+                <div class="news-title">Domestic Institutions (DIIs) lagatar market ko niche se support de rahe hain.</div>
             </div>
         </div>
     </div>
@@ -243,8 +319,8 @@
     // Dynamic Option Chain Bars
     function renderOptionChain() {
         const strikes = [25000, 25050, 25100, 25150, 25200, 25250, 25300];
-        const putWidths = [88, 76, 65, 58, 35, 22, 15];
-        const callWidths = [18, 25, 40, 52, 72, 85, 92];
+        const putWidths = [90, 78, 66, 58, 35, 22, 15];
+        const callWidths = [16, 24, 38, 52, 72, 85, 94];
 
         let html = '';
         strikes.forEach((st, idx) => {
@@ -260,68 +336,32 @@
     }
     renderOptionChain();
 
-    // Radar Chart
-    new Chart(document.getElementById('radarChart'), {
-        type: 'radar',
-        data: {
-            labels: ['Momentum', 'Liquidity', 'Institutional Flow', 'Trend Strength', 'OI Support'],
-            datasets: [{
-                label: 'NIFTY Score',
-                data: [82, 78, 74, 85, 80],
-                backgroundColor: 'rgba(56, 189, 248, 0.25)',
-                borderColor: '#38bdf8',
-                pointBackgroundColor: '#22c55e'
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: {
-                r: {
-                    angleLines: { color: '#26334d' },
-                    grid: { color: '#26334d' },
-                    pointLabels: { color: '#cbd5e1', font: { size: 10 } },
-                    ticks: { display: false, max: 100, min: 0 }
-                }
-            }
-        }
-    });
-
-    // Charts Data & Rendering
-    const dates = ['1 Nov', '4 Nov', '6 Nov', '8 Nov', '10 Nov', '12 Nov', '13 Nov'];
-    const prices = [24850, 24920, 25010, 24980, 25090, 25140, 25180];
-    const sma20 = [24700, 24750, 24800, 24850, 24900, 24950, 25020];
-    const macd = [15, 22, 30, 28, 35, 39, 42.5];
-    const msig = [10, 14, 20, 22, 26, 29, 31];
-    const hist = [5, 8, 10, 6, 9, 10, 11.5];
+    // Price Chart
+    const dates = ['9 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov'];
+    const prices = [24920, 25010, 24980, 25090, 25140, 25180];
+    const sma20 = [24780, 24830, 24870, 24920, 24980, 25030];
     const sup = 25000, res = 25350;
-
-    const tick = { color: '#94a3b8', maxTicksLimit: 6, font: { size: 10 } };
-    const leg = { labels: { color: '#fff', boxWidth: 10, font: { size: 10 } } };
 
     new Chart(document.getElementById('priceChart'), {
         type: 'line',
         data: {
             labels: dates,
             datasets: [
-                { label: 'NIFTY', data: prices, borderColor: '#38bdf8', pointRadius: 2, tension: 0.2, borderWidth: 2 },
+                { label: 'NIFTY', data: prices, borderColor: '#38bdf8', pointRadius: 3, tension: 0.2, borderWidth: 2 },
                 { label: 'SMA 20', data: sma20, borderColor: '#facc15', pointRadius: 0, borderWidth: 1.5 },
-                { label: 'Support', data: prices.map(() => sup), borderColor: '#22c55e', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
-                { label: 'Resistance', data: prices.map(() => res), borderColor: '#ef4444', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }
+                { label: 'Buying Support (25,000)', data: prices.map(() => sup), borderColor: '#22c55e', borderDash: [5, 5], pointRadius: 0, borderWidth: 1.2 },
+                { label: 'Selling Resistance (25,350)', data: prices.map(() => res), borderColor: '#ef4444', borderDash: [5, 5], pointRadius: 0, borderWidth: 1.2 }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: leg }, scales: { x: { ticks: tick, grid: { display: false } }, y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } } } }
-    });
-
-    new Chart(document.getElementById('macdChart'), {
-        data: {
-            labels: dates,
-            datasets: [
-                { type: 'bar', label: 'Histogram', data: hist, backgroundColor: hist.map(v => v >= 0 ? '#22c55e88' : '#ef444488') },
-                { type: 'line', label: 'MACD', data: macd, borderColor: '#38bdf8', pointRadius: 0, borderWidth: 1.5 },
-                { type: 'line', label: 'Signal', data: msig, borderColor: '#f97316', pointRadius: 0, borderWidth: 1.5 }
-            ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: leg }, scales: { x: { ticks: tick, grid: { display: false } }, y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#fff', boxWidth: 10, font: { size: 10 } } } },
+            scales: {
+                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } }
+            }
+        }
     });
 </script>
 </body>
