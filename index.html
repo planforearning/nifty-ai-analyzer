@@ -48,7 +48,7 @@
         .search-input { width: 100%; background: var(--card-dark); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; color: #fff; font-size: 0.85rem; margin-bottom: 10px; outline: none; }
         .search-input:focus { border-color: var(--blue); }
 
-        /* F&O Table */
+        /* Tables */
         .fno-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
         .fno-table th, .fno-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
         .fno-table th { color: var(--muted); font-weight: 700; background: var(--card-dark); }
@@ -69,7 +69,6 @@
         .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
         
         .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); } .blue { color: var(--blue); }
-        
         .chart-container { position: relative; width: 100%; height: 220px; }
         canvas { width: 100% !important; height: 220px !important; }
     </style>
@@ -85,16 +84,15 @@
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ Multi-Index & Patterns</button>
+        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ Scalp & Patterns</button>
+        <button class="tab-btn" onclick="openTab('wealth', this)">💼 5-Yr Wealth & Bucket</button>
         <button class="tab-btn" onclick="openTab('fnotable', this)">📋 F&O Master List</button>
-        <button class="tab-btn" onclick="openTab('global', this)">🌍 Global & Future</button>
+        <button class="tab-btn" onclick="openTab('global', this)">🌍 Global Cues</button>
         <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 FII/DII Flow</button>
-        <button class="tab-btn" onclick="openTab('news', this)">📰 Live News</button>
     </div>
 
-    <!-- TAB 1: ALL INDEX SCALPING WITH DYNAMIC PATTERns -->
+    <!-- TAB 1: ALL INDEX SCALPING WITH DYNAMIC PATTERNS -->
     <div id="scalp" class="tab-content active">
-        <!-- Index Switcher Bar -->
         <div class="idx-bar">
             <button class="idx-pill active" onclick="switchIndex('NIFTY', this)">NIFTY (Lot: 65)</button>
             <button class="idx-pill" onclick="switchIndex('BANKNIFTY', this)">BANKNIFTY (Lot: 30)</button>
@@ -103,7 +101,6 @@
             <button class="idx-pill" onclick="switchIndex('SENSEX', this)">SENSEX (Lot: 10)</button>
         </div>
 
-        <!-- Dynamic Trade Card -->
         <div class="trade-card">
             <div class="trade-header">
                 <span style="font-size:0.76rem; font-weight:800; color:var(--green);" id="tCapTag">⚡ NIFTY SCALPING SETUP</span>
@@ -131,7 +128,6 @@
             </div>
         </div>
 
-        <!-- Support & Resistance Levels Card -->
         <div class="card">
             <div class="card-title"><span>📊 Active Chart Pattern & Key Zones</span></div>
             <div class="grid-2">
@@ -148,7 +144,6 @@
             </div>
         </div>
 
-        <!-- Live Visual Chart -->
         <div class="card">
             <div class="card-title">
                 <span id="chartTitle">📈 NIFTY Price Trend & Pattern</span>
@@ -160,7 +155,55 @@
         </div>
     </div>
 
-    <!-- TAB 2: F&O MASTER LIST & UPDATED LOT SIZES (NOV 2026) -->
+    <!-- TAB 2: 5-YEAR WEALTH CREATION & STOCK BUCKET (NEW) -->
+    <div id="wealth" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>💼 ₹1K - ₹2K Monthly SIP & Wealth Plan</span><span style="font-size:0.7rem; color:var(--green);">5-Yr Target</span></div>
+            <div style="font-size:0.8rem; color:#cbd5e1; line-height:1.4; margin-bottom:10px;">
+                Chote budget (₹1,000 - ₹2,000/month) se 5 saal mein compounding aur dividend ke zariye strong wealth aur passive income banane ka smart stock bucket.
+            </div>
+            <div class="grid-2">
+                <div class="stat-box" style="border-color: var(--blue);">
+                    <div class="stat-label">🎯 Monthly Allocation</div>
+                    <div class="stat-val blue">₹1,000 - ₹2,000</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">SIP on every 5th of month</div>
+                </div>
+                <div class="stat-box" style="border-color: var(--green);">
+                    <div class="stat-label">📈 Est. 5-Yr Corpus</div>
+                    <div class="stat-val green">₹1.6L - ₹1.9L+</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Based on 14% CAGR + Dividend</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span>🧺 Recommended Long-Term Stock Bucket</span></div>
+            <div style="overflow-x: auto;">
+                <table class="fno-table">
+                    <thead>
+                        <tr>
+                            <th>Stock / ETF</th>
+                            <th>Category</th>
+                            <th>Purpose / Benefit</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>NIFTYBEES</strong></td><td>Index ETF</td><td>Top 50 Safe Growth (Core SIP)</td><td><span class="badge b-buy">BUY SIP</span></td></tr>
+                        <tr><td><strong>COALINDIA / ITC</strong></td><td>Dividend PSU</td><td>High Dividend (Passive Income)</td><td><span class="badge b-buy">BUY INCOME</span></td></tr>
+                        <tr><td><strong>TATA POWER</strong></td><td>Growth Stock</td><td>EV & Green Energy Future</td><td><span class="badge b-buy">ACCUMULATE</span></td></tr>
+                        <tr><td><strong>RELIANCE</strong></td><td>Bluechip</td><td>Market Leader & Stability</td><td><span class="badge b-buy">HOLD / SIP</span></td></tr>
+                        <tr><td><strong>BEL</strong></td><td>Defence Growth</td><td>Strong Order Book Momentum</td><td><span class="badge b-buy">BUY DIP</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="font-size:0.72rem; color:var(--muted); text-align:center; margin-top:8px;">
+                💡 Rule: Har mahine dip par ya fix date par inme thoda-thoda invest karein aur 5 saal tak hold rakhein.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: F&O MASTER LIST -->
     <div id="fnotable" class="tab-content">
         <div class="card">
             <div class="card-title"><span>📋 NSE F&O Master List (Nov 2026)</span><span style="font-size:0.7rem; color:var(--blue);">Searchable</span></div>
@@ -194,7 +237,7 @@
         </div>
     </div>
 
-    <!-- TAB 3: GLOBAL MARKETS -->
+    <!-- TAB 4: GLOBAL MARKETS -->
     <div id="global" class="tab-content">
         <div class="card">
             <div class="card-title"><span>🌍 Global Indices & Future Cues</span></div>
@@ -213,24 +256,13 @@
         </div>
     </div>
 
-    <!-- TAB 4: INSTITUTIONAL MONEY FLOW -->
+    <!-- TAB 5: INSTITUTIONAL MONEY FLOW -->
     <div id="moneyflow" class="tab-content">
         <div class="card">
             <div class="card-title"><span>🏦 Institutional Cash Flow (FII / DII)</span></div>
             <div class="grid-2">
                 <div class="stat-box"><div class="stat-label">FII Net Activity</div><div class="stat-val red">-₹1,420 Cr</div></div>
                 <div class="stat-box"><div class="stat-label">DII Net Activity</div><div class="stat-val green">+₹2,180 Cr</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: LIVE NEWS -->
-    <div id="news" class="tab-content">
-        <div class="card">
-            <div class="card-title"><span>📰 Market News & F&O Updates</span></div>
-            <div class="news-item" style="padding:10px; background:var(--card-dark); border-radius:8px; margin-bottom:8px;">
-                <div class="news-time" style="font-size:0.68rem; color:var(--blue); font-weight:700;">NOV 2026 F&O UPDATE</div>
-                <div class="news-title" style="font-size:0.82rem; font-weight:600; margin-top:3px;">Multi-Index Pattern Scanner active. Select any index above to view live chart patterns and ₹5K capital scalping setups.</div>
             </div>
         </div>
     </div>
@@ -261,20 +293,15 @@
         }
     }
 
-    // Index Database with Patterns & ₹5K Capital Fits
     const indexData = {
         NIFTY: {
             capTag: "⚡ NIFTY SCALPING (Lot Size: 65)",
             signal: "STRONG BUY (CE)",
             contract: "NIFTY 25,200 CE (1 Lot = 65 Qty)",
             logic: "Pattern: <strong class='yellow'>Cup & Handle Breakout</strong> | Capital Required: <strong class='yellow'>~₹5,500</strong>",
-            entry: "₹88 - ₹92",
-            target: "₹115 - ₹125",
-            sl: "₹76 (Strict)",
-            sup: "25,000 - 25,100",
-            supPat: "Pattern: Double Bottom Support",
-            res: "25,300 - 25,350",
-            resPat: "Pattern: Immediate Supply Zone",
+            entry: "₹88 - ₹92", target: "₹115 - ₹125", sl: "₹76 (Strict)",
+            sup: "25,000 - 25,100", supPat: "Pattern: Double Bottom Support",
+            res: "25,300 - 25,350", resPat: "Pattern: Immediate Supply Zone",
             chartTitle: "📈 NIFTY Price Trend & Cup/Handle",
             prices: [24920, 25010, 24980, 25090, 25140, 25180]
         },
@@ -283,13 +310,9 @@
             signal: "BUY ON DIP (CE)",
             contract: "BANKNIFTY 52,200 CE (1 Lot = 30 Qty)",
             logic: "Pattern: <strong class='yellow'>Bullish Flag & Pole</strong> | Capital Required: <strong class='yellow'>~₹6,000</strong>",
-            entry: "₹195 - ₹205",
-            target: "₹250 - ₹270",
-            sl: "₹170 (Strict)",
-            sup: "51,600 - 51,800",
-            supPat: "Pattern: Rising Trendline Support",
-            res: "52,500 - 52,650",
-            resPat: "Pattern: Resistance Channel",
+            entry: "₹195 - ₹205", target: "₹250 - ₹270", sl: "₹170 (Strict)",
+            sup: "51,600 - 51,800", supPat: "Pattern: Rising Trendline Support",
+            res: "52,500 - 52,650", resPat: "Pattern: Resistance Channel",
             chartTitle: "📈 BANKNIFTY Trend & Bullish Flag",
             prices: [51400, 51650, 51580, 51820, 51950, 52040]
         },
@@ -298,13 +321,9 @@
             signal: "STRONG BUY (CE)",
             contract: "FINNIFTY 24,100 CE (1 Lot = 60 Qty)",
             logic: "Pattern: <strong class='yellow'>Ascending Triangle Breakout</strong> | Capital Required: <strong class='yellow'>~₹4,200</strong>",
-            entry: "₹65 - ₹70",
-            target: "₹90 - ₹100",
-            sl: "₹55 (Strict)",
-            sup: "23,850 - 23,950",
-            supPat: "Pattern: Horizontal Base Support",
-            res: "24,250 - 24,300",
-            resPat: "Pattern: Breakout Resistance",
+            entry: "₹65 - ₹70", target: "₹90 - ₹100", sl: "₹55 (Strict)",
+            sup: "23,850 - 23,950", supPat: "Pattern: Horizontal Base Support",
+            res: "24,250 - 24,300", resPat: "Pattern: Breakout Resistance",
             chartTitle: "📈 FINNIFTY Ascending Triangle",
             prices: [23750, 23840, 23810, 23920, 24010, 24060]
         },
@@ -313,13 +332,9 @@
             signal: "MOMENTUM BUY (CE)",
             contract: "MIDCPNIFTY 12,850 CE (1 Lot = 120 Qty)",
             logic: "Pattern: <strong class='yellow'>Rounding Bottom Reversal</strong> | Capital Required: <strong class='yellow'>~₹4,800</strong>",
-            entry: "₹38 - ₹42",
-            target: "₹55 - ₹62",
-            sl: "₹31 (Strict)",
-            sup: "12,700 - 12,750",
-            supPat: "Pattern: Accumulation Zone",
-            res: "12,950 - 13,000",
-            resPat: "Pattern: Swing High Target",
+            entry: "₹38 - ₹42", target: "₹55 - ₹62", sl: "₹31 (Strict)",
+            sup: "12,700 - 12,750", supPat: "Pattern: Accumulation Zone",
+            res: "12,950 - 13,000", resPat: "Pattern: Swing High Target",
             chartTitle: "📈 MIDCPNIFTY Rounding Bottom",
             prices: [12650, 12710, 12690, 12760, 12800, 12825]
         },
@@ -328,13 +343,9 @@
             signal: "BREAKOUT BUY (CE)",
             contract: "SENSEX 82,600 CE (1 Lot = 10 Qty)",
             logic: "Pattern: <strong class='yellow'>Falling Wedge Reversal</strong> | Capital Required: <strong class='yellow'>~₹2,400</strong>",
-            entry: "₹230 - ₹245",
-            target: "₹310 - ₹330",
-            sl: "₹195 (Strict)",
-            sup: "81,900 - 82,100",
-            supPat: "Pattern: Wedge Lower Trendline",
-            res: "82,900 - 83,100",
-            resPat: "Pattern: Wedge Upper Boundary",
+            entry: "₹230 - ₹245", target: "₹310 - ₹330", sl: "₹195 (Strict)",
+            sup: "81,900 - 82,100", supPat: "Pattern: Wedge Lower Trendline",
+            res: "82,900 - 83,100", resPat: "Pattern: Wedge Upper Boundary",
             chartTitle: "📈 SENSEX Falling Wedge",
             prices: [81600, 81850, 81790, 82100, 82320, 82480]
         }
@@ -365,34 +376,24 @@
 
     function updateChart(dataPoints, labelName) {
         const ctx = document.getElementById('priceChart').getContext('2d');
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
+        if (chartInstance) { chartInstance.destroy(); }
         const dates = ['9 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov'];
         
         chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
-                datasets: [
-                    {
-                        label: labelName + ' Price Trend',
-                        data: dataPoints,
-                        borderColor: '#38bdf8',
-                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                        fill: true,
-                        pointRadius: 4,
-                        tension: 0.3,
-                        borderWidth: 2.5
-                    }
-                ]
+                datasets: [{
+                    label: labelName + ' Price Trend',
+                    data: dataPoints,
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                    fill: true, pointRadius: 4, tension: 0.3, borderWidth: 2.5
+                }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#fff', boxWidth: 12, font: { size: 11 } } }
-                },
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#fff', boxWidth: 12, font: { size: 11 } } } },
                 scales: {
                     x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
                     y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } }
@@ -401,7 +402,6 @@
         });
     }
 
-    // Initial Load for Nifty
     window.addEventListener('DOMContentLoaded', () => {
         updateChart(indexData.NIFTY.prices, 'NIFTY');
     });
