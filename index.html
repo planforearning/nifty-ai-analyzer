@@ -3,74 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIFTY & F&O Master Terminal Pro</title>
+    <title>NIFTY & Crypto Master Terminal Pro</title>
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg: #0b1120; --card: #151f32; --card-dark: #0f172a; --border: #26334d;
-            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308;
+            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308; --crypto: #f7931a;
         }
         * { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
-        .container { max-width: 720px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
 
         /* Top Header */
-        .topbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
-        .brand { font-size: 1.02rem; font-weight: 800; color: var(--blue); display: flex; align-items: center; gap: 6px; }
-        .dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
-        .spot-pill { background: var(--card-dark); padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; border: 1px solid var(--border); color: var(--green); }
+        .topbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; }
+        .brand { font-size: 1.1rem; font-weight: 800; color: var(--blue); display: flex; align-items: center; gap: 8px; }
+        .dot { height: 9px; width: 9px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+        .spot-pill { background: var(--card-dark); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); color: var(--crypto); }
 
-        /* Navigation Tabs */
-        .nav-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 8px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        /* Navigation Tabs - PC Wrapped */
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .tab-btn { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 9px 15px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background: var(--blue); color: #000; border-color: var(--blue); }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Index Selector Pills */
-        .idx-bar { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; scrollbar-width: none; }
-        .idx-bar::-webkit-scrollbar { display: none; }
-        .idx-pill { background: var(--card-dark); color: #cbd5e1; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        .idx-pill.active { background: var(--green); color: #000; border-color: var(--green); }
+        /* Selector Pills */
+        .idx-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .idx-pill { background: var(--card-dark); color: #cbd5e1; border: 1px solid var(--border); padding: 7px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .idx-pill.active { background: var(--crypto); color: #000; border-color: var(--crypto); }
+        .idx-pill.nifty-active.active { background: var(--green); color: #000; border-color: var(--green); }
 
         /* Cards & Grids */
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-        .card-title { font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 10px; border-radius: 9px; }
-        .stat-label { font-size: 0.68rem; color: var(--muted); }
-        .stat-val { font-size: 0.9rem; font-weight: 800; margin-top: 3px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .card-title { font-size: 0.9rem; font-weight: 700; color: #cbd5e1; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 12px; border-radius: 9px; }
+        .stat-label { font-size: 0.7rem; color: var(--muted); }
+        .stat-val { font-size: 0.95rem; font-weight: 800; margin-top: 4px; }
 
-        /* Search Bar for F&O */
+        /* Search Bar */
         .search-input { width: 100%; background: var(--card-dark); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; color: #fff; font-size: 0.85rem; margin-bottom: 10px; outline: none; }
         .search-input:focus { border-color: var(--blue); }
 
         /* Tables */
-        .fno-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-        .fno-table th, .fno-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        .fno-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .fno-table th, .fno-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
         .fno-table th { color: var(--muted); font-weight: 700; background: var(--card-dark); }
         .fno-table tr:hover { background: rgba(56, 189, 248, 0.05); }
 
-        /* Scalping Trade Card */
-        .trade-card { background: linear-gradient(145deg, #0f291e, #151f32); border: 1px solid var(--green); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        /* Trade Cards */
+        .trade-card { background: linear-gradient(145deg, #271c08, #151f32); border: 1px solid var(--crypto); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
         .trade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .trade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-        .t-pill { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px; text-align: center; }
-        .t-pill span { display: block; font-size: 0.68rem; color: var(--muted); }
-        .t-pill strong { font-size: 0.9rem; margin-top: 2px; display: block; }
+        .trade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+        .t-pill { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; text-align: center; }
+        .t-pill span { display: block; font-size: 0.7rem; color: var(--muted); }
+        .t-pill strong { font-size: 0.95rem; margin-top: 3px; display: block; }
 
-        .badge { padding: 3px 9px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .b-buy { background: var(--green); color: #000; }
         .b-sell { background: var(--red); color: #fff; }
+        .b-crypto { background: var(--crypto); color: #000; }
 
-        .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
-        
-        .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); } .blue { color: var(--blue); }
-        .chart-container { position: relative; width: 100%; height: 220px; }
-        canvas { width: 100% !important; height: 220px !important; }
+        .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); } .blue { color: var(--blue); } .crypto { color: var(--crypto); }
+        .chart-container { position: relative; width: 100%; height: 260px; }
+        canvas { width: 100% !important; height: 260px !important; }
     </style>
 </head>
 <body>
@@ -78,38 +76,101 @@
 <div class="container">
     <!-- Top Header -->
     <div class="topbar">
-        <div class="brand"><span class="dot"></span>NIFTY & F&O Master Terminal</div>
-        <div class="spot-pill" id="liveSpot">Nov 2026 Lot Sizes Active</div>
+        <div class="brand"><span class="dot"></span>NIFTY & Crypto Master Terminal</div>
+        <div class="spot-pill" id="liveSpot">24x7 Live Market Active</div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ Scalp & Patterns</button>
-        <button class="tab-btn" onclick="openTab('wealth', this)">💼 5-Yr Wealth & Bucket</button>
+        <button class="tab-btn active" onclick="openTab('cryptoTab', this)">🪙 Crypto Scalp & Patterns</button>
+        <button class="tab-btn" onclick="openTab('scalp', this)">⚡ NIFTY Indices</button>
+        <button class="tab-btn" onclick="openTab('wealth', this)">💼 5-Yr Wealth & SIP</button>
         <button class="tab-btn" onclick="openTab('fnotable', this)">📋 F&O Master List</button>
         <button class="tab-btn" onclick="openTab('global', this)">🌍 Global Cues</button>
-        <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 FII/DII Flow</button>
     </div>
 
-    <!-- TAB 1: ALL INDEX SCALPING WITH DYNAMIC PATTERNS -->
-    <div id="scalp" class="tab-content active">
+    <!-- TAB 1: CRYPTO SCALPING & PATTERNS (NEW) -->
+    <div id="cryptoTab" class="tab-content active">
         <div class="idx-bar">
-            <button class="idx-pill active" onclick="switchIndex('NIFTY', this)">NIFTY (Lot: 65)</button>
-            <button class="idx-pill" onclick="switchIndex('BANKNIFTY', this)">BANKNIFTY (Lot: 30)</button>
-            <button class="idx-pill" onclick="switchIndex('FINNIFTY', this)">FINNIFTY (Lot: 60)</button>
-            <button class="idx-pill" onclick="switchIndex('MIDCPNIFTY', this)">MIDCPNIFTY (Lot: 120)</button>
-            <button class="idx-pill" onclick="switchIndex('SENSEX', this)">SENSEX (Lot: 10)</button>
+            <button class="idx-pill active" onclick="switchCrypto('BTC', this)">BITCOIN (BTC)</button>
+            <button class="idx-pill" onclick="switchCrypto('ETH', this)">ETHEREUM (ETH)</button>
+            <button class="idx-pill" onclick="switchCrypto('SOL', this)">SOLANA (SOL)</button>
+            <button class="idx-pill" onclick="switchCrypto('XRP', this)">RIPPLE (XRP)</button>
         </div>
 
         <div class="trade-card">
             <div class="trade-header">
-                <span style="font-size:0.76rem; font-weight:800; color:var(--green);" id="tCapTag">⚡ NIFTY SCALPING SETUP</span>
+                <span style="font-size:0.8rem; font-weight:800; color:var(--crypto);" id="cCapTag">🪙 CRYPTO SPOT / FUTURES SETUP</span>
+                <span class="badge b-crypto" id="cSignal">STRONG BUY</span>
+            </div>
+            <div style="font-size:1rem; font-weight:800; color:#fff; margin-bottom:4px;" id="cContract">
+                BTC / USDT (Long Position)
+            </div>
+            <div style="font-size:0.78rem; color:#cbd5e1; line-height:1.4;" id="cLogic">
+                Pattern: <strong class="yellow">Bullish Pennant Breakout</strong> | Risk: Low-Medium
+            </div>
+            <div class="trade-grid">
+                <div class="t-pill">
+                    <span>ENTRY ZONE</span>
+                    <strong class="blue" id="cEntry">$91,200 - $91,800</strong>
+                </div>
+                <div class="t-pill">
+                    <span>TARGET ZONE</span>
+                    <strong class="green" id="cTarget">$94,500 - $96,000</strong>
+                </div>
+                <div class="t-pill">
+                    <span>STOP LOSS (SL)</span>
+                    <strong class="red" id="cSl">$89,900 (Strict)</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span>📊 Crypto Chart Pattern & Support Zones</span></div>
+            <div class="grid-2">
+                <div class="stat-box" style="border-color: var(--green);">
+                    <div class="stat-label">🟢 Support Level (Buy Dip)</div>
+                    <div class="stat-val green" id="cSup">$90,000 - $90,500</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;" id="cSupPat">Pattern: EMA 50 Support</div>
+                </div>
+                <div class="stat-box" style="border-color: var(--red);">
+                    <div class="stat-label">🔴 Resistance (Profit Zone)</div>
+                    <div class="stat-val red" id="cRes">$95,200 - $96,000</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;" id="cResPat">Pattern: Weekly Supply Wall</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span id="cChartTitle">📈 BTC Price Trend & Breakout</span>
+                <span style="font-size:0.75rem; color:var(--crypto);">● 24x7 Live Data</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="cryptoChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: NIFTY INDICES SCALPING -->
+    <div id="scalp" class="tab-content">
+        <div class="idx-bar">
+            <button class="idx-pill nifty-active active" onclick="switchIndex('NIFTY', this)">NIFTY (Lot: 65)</button>
+            <button class="idx-pill nifty-active" onclick="switchIndex('BANKNIFTY', this)">BANKNIFTY (Lot: 30)</button>
+            <button class="idx-pill nifty-active" onclick="switchIndex('FINNIFTY', this)">FINNIFTY (Lot: 60)</button>
+            <button class="idx-pill nifty-active" onclick="switchIndex('MIDCPNIFTY', this)">MIDCPNIFTY (Lot: 120)</button>
+            <button class="idx-pill nifty-active" onclick="switchIndex('SENSEX', this)">SENSEX (Lot: 10)</button>
+        </div>
+
+        <div class="trade-card" style="background: linear-gradient(145deg, #0f291e, #151f32); border-color: var(--green);">
+            <div class="trade-header">
+                <span style="font-size:0.8rem; font-weight:800; color:var(--green);" id="tCapTag">⚡ NIFTY SCALPING SETUP</span>
                 <span class="badge b-buy" id="tSignal">STRONG BUY (CE)</span>
             </div>
-            <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-bottom:4px;" id="tContract">
+            <div style="font-size:1rem; font-weight:800; color:#fff; margin-bottom:4px;" id="tContract">
                 NIFTY 25,200 CE (1 Lot = 65 Qty)
             </div>
-            <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.35;" id="tLogic">
+            <div style="font-size:0.78rem; color:#cbd5e1; line-height:1.4;" id="tLogic">
                 Pattern: <strong class="yellow">Cup & Handle Breakout</strong> | Capital Required: <strong class="yellow">~₹5,500</strong>
             </div>
             <div class="trade-grid">
@@ -134,12 +195,12 @@
                 <div class="stat-box" style="border-color: var(--green);">
                     <div class="stat-label">🟢 Support Level (Buy Zone)</div>
                     <div class="stat-val green" id="tSup">25,000 - 25,100</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;" id="tSupPattern">Pattern: Double Bottom Support</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;" id="tSupPattern">Pattern: Double Bottom Support</div>
                 </div>
                 <div class="stat-box" style="border-color: var(--red);">
                     <div class="stat-label">🔴 Resistance (Target Zone)</div>
                     <div class="stat-val red" id="tRes">25,300 - 25,350</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;" id="tResPattern">Pattern: Immediate Supply Zone</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;" id="tResPattern">Pattern: Immediate Supply Zone</div>
                 </div>
             </div>
         </div>
@@ -147,7 +208,7 @@
         <div class="card">
             <div class="card-title">
                 <span id="chartTitle">📈 NIFTY Price Trend & Pattern</span>
-                <span style="font-size:0.7rem; color:var(--green);" id="chartStatus">● Bullish Breakout</span>
+                <span style="font-size:0.75rem; color:var(--green);">● Bullish Breakout</span>
             </div>
             <div class="chart-container">
                 <canvas id="priceChart"></canvas>
@@ -155,61 +216,58 @@
         </div>
     </div>
 
-    <!-- TAB 2: 5-YEAR WEALTH CREATION & STOCK BUCKET (NEW) -->
+    <!-- TAB 3: 5-YEAR WEALTH CREATION & STOCK/CRYPTO BUCKET -->
     <div id="wealth" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>💼 ₹1K - ₹2K Monthly SIP & Wealth Plan</span><span style="font-size:0.7rem; color:var(--green);">5-Yr Target</span></div>
-            <div style="font-size:0.8rem; color:#cbd5e1; line-height:1.4; margin-bottom:10px;">
-                Chote budget (₹1,000 - ₹2,000/month) se 5 saal mein compounding aur dividend ke zariye strong wealth aur passive income banane ka smart stock bucket.
+            <div class="card-title"><span>💼 Long-Term Wealth & Crypto/SIP Bucket</span><span style="font-size:0.75rem; color:var(--crypto);">Future Growth</span></div>
+            <div style="font-size:0.82rem; color:#cbd5e1; line-height:1.4; margin-bottom:12px;">
+                Long-term wealth creation ke liye stock SIP ke sath-sath top crypto assets (BTC/ETH) mein safe DCA (Dollar Cost Averaging) ka plan.
             </div>
             <div class="grid-2">
-                <div class="stat-box" style="border-color: var(--blue);">
-                    <div class="stat-label">🎯 Monthly Allocation</div>
-                    <div class="stat-val blue">₹1,000 - ₹2,000</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">SIP on every 5th of month</div>
+                <div class="stat-box" style="border-color: var(--crypto);">
+                    <div class="stat-label">🪙 Crypto Long-Term Asset</div>
+                    <div class="stat-val crypto">BTC & ETH (DCA)</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Max 10% portfolio allocation</div>
                 </div>
                 <div class="stat-box" style="border-color: var(--green);">
-                    <div class="stat-label">📈 Est. 5-Yr Corpus</div>
-                    <div class="stat-val green">₹1.6L - ₹1.9L+</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Based on 14% CAGR + Dividend</div>
+                    <div class="stat-label">📈 Stock SIP Bucket</div>
+                    <div class="stat-val green">NiftyBees + PSU</div>
+                    <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Stable compounding growth</div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-title"><span>🧺 Recommended Long-Term Stock Bucket</span></div>
+            <div class="card-title"><span>🧺 Recommended Long-Term Portfolio Bucket</span></div>
             <div style="overflow-x: auto;">
                 <table class="fno-table">
                     <thead>
                         <tr>
-                            <th>Stock / ETF</th>
+                            <th>Asset / Stock</th>
                             <th>Category</th>
-                            <th>Purpose / Benefit</th>
+                            <th>Purpose / Strategy</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><strong>NIFTYBEES</strong></td><td>Index ETF</td><td>Top 50 Safe Growth (Core SIP)</td><td><span class="badge b-buy">BUY SIP</span></td></tr>
-                        <tr><td><strong>COALINDIA / ITC</strong></td><td>Dividend PSU</td><td>High Dividend (Passive Income)</td><td><span class="badge b-buy">BUY INCOME</span></td></tr>
-                        <tr><td><strong>TATA POWER</strong></td><td>Growth Stock</td><td>EV & Green Energy Future</td><td><span class="badge b-buy">ACCUMULATE</span></td></tr>
-                        <tr><td><strong>RELIANCE</strong></td><td>Bluechip</td><td>Market Leader & Stability</td><td><span class="badge b-buy">HOLD / SIP</span></td></tr>
-                        <tr><td><strong>BEL</strong></td><td>Defence Growth</td><td>Strong Order Book Momentum</td><td><span class="badge b-buy">BUY DIP</span></td></tr>
+                        <tr><td><strong>BITCOIN (BTC)</strong></td><td>Crypto Core</td><td>Digital Gold (Long-term store of value)</td><td><span class="badge b-crypto">DCA / SIP</span></td></tr>
+                        <tr><td><strong>ETHEREUM (ETH)</strong></td><td>Crypto Smart Contract</td><td>Web3 Infrastructure Growth</td><td><span class="badge b-crypto">ACCUMULATE</span></td></tr>
+                        <tr><td><strong>NIFTYBEES</strong></td><td>Index ETF</td><td>Top 50 Safe Indian Growth</td><td><span class="badge b-buy">BUY SIP</span></td></tr>
+                        <tr><td><strong>COALINDIA / ITC</strong></td><td>Dividend Stock</td><td>Regular Passive Income</td><td><span class="badge b-buy">BUY INCOME</span></td></tr>
+                        <tr><td><strong>TATA POWER</strong></td><td>Growth Stock</td><td>Green Energy Future</td><td><span class="badge b-buy">HOLD</span></td></tr>
                     </tbody>
                 </table>
-            </div>
-            <div style="font-size:0.72rem; color:var(--muted); text-align:center; margin-top:8px;">
-                💡 Rule: Har mahine dip par ya fix date par inme thoda-thoda invest karein aur 5 saal tak hold rakhein.
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: F&O MASTER LIST -->
+    <!-- TAB 4: F&O MASTER LIST -->
     <div id="fnotable" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>📋 NSE F&O Master List (Nov 2026)</span><span style="font-size:0.7rem; color:var(--blue);">Searchable</span></div>
+            <div class="card-title"><span>📋 NSE F&O Master List (Nov 2026)</span><span style="font-size:0.75rem; color:var(--blue);">Searchable</span></div>
             <input type="text" id="fnoSearch" class="search-input" placeholder="🔍 Search F&O Symbol (e.g. NIFTY, BANKNIFTY, ABB)..." onkeyup="filterFnoTable()">
             
-            <div style="overflow-x: auto; max-height: 400px;">
+            <div style="overflow-x: auto; max-height: 450px;">
                 <table class="fno-table" id="fnoTableList">
                     <thead>
                         <tr>
@@ -224,12 +282,8 @@
                         <tr><td><strong>FINNIFTY</strong></td><td>Index F&O</td><td>60</td><td><span class="badge b-buy">BUY CE</span></td></tr>
                         <tr><td><strong>MIDCPNIFTY</strong></td><td>Index F&O</td><td>120</td><td><span class="badge b-buy">BUY CE</span></td></tr>
                         <tr><td><strong>NIFTY</strong></td><td>Index F&O</td><td>65</td><td><span class="badge b-buy">BUY CE</span></td></tr>
-                        <tr><td><strong>NIFTYFPI</strong></td><td>Index F&O</td><td>1100</td><td><span class="badge b-buy">HOLD</span></td></tr>
                         <tr><td><strong>NIFTYNXT50</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BULLISH</span></td></tr>
-                        <tr><td><strong>360ONE</strong></td><td>Stock F&O</td><td>500</td><td><span class="badge b-buy">LONG</span></td></tr>
                         <tr><td><strong>ABB</strong></td><td>Stock F&O</td><td>125</td><td><span class="badge b-buy">BUY</span></td></tr>
-                        <tr><td><strong>ABCAPITAL</strong></td><td>Stock F&O</td><td>1550</td><td><span class="badge b-buy">BUY</span></td></tr>
-                        <tr><td><strong>ADANIENSOL</strong></td><td>Stock F&O</td><td>675</td><td><span class="badge b-sell">SELL</span></td></tr>
                         <tr><td><strong>ADANIENT</strong></td><td>Stock F&O</td><td>309</td><td><span class="badge b-buy">BUY</span></td></tr>
                     </tbody>
                 </table>
@@ -237,32 +291,17 @@
         </div>
     </div>
 
-    <!-- TAB 4: GLOBAL MARKETS -->
+    <!-- TAB 5: GLOBAL MARKETS -->
     <div id="global" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>🌍 Global Indices & Future Cues</span></div>
-            <div class="flow-item" style="border-color: var(--green);">
+            <div class="card-title"><span>🌍 Global Indices & Crypto Sentiment</span></div>
+            <div class="flow-item" style="display:flex; justify-content:space-between; padding:10px; background:var(--card-dark); border-radius:8px; margin-bottom:8px; border-left:4px solid var(--crypto);">
+                <div><strong>Crypto Fear & Greed Index</strong><div style="font-size:0.7rem; color:var(--muted);">Market Sentiment</div></div>
+                <div style="text-align:right;"><strong class="green">78 (Greed)</strong><div style="font-size:0.7rem;" class="green">Bullish</div></div>
+            </div>
+            <div class="flow-item" style="display:flex; justify-content:space-between; padding:10px; background:var(--card-dark); border-radius:8px; margin-bottom:8px; border-left:4px solid var(--blue);">
                 <div><strong>GIFT NIFTY (Future)</strong><div style="font-size:0.7rem; color:var(--muted);">Opening Indicator</div></div>
                 <div style="text-align:right;"><strong class="green">25,265.00</strong><div style="font-size:0.7rem;" class="green">+0.38% ↑</div></div>
-            </div>
-            <div class="flow-item" style="border-color: var(--green);">
-                <div><strong>NASDAQ (US Tech)</strong><div style="font-size:0.7rem; color:var(--muted);">IT Sentiment</div></div>
-                <div style="text-align:right;"><strong class="green">19,280.40</strong><div style="font-size:0.7rem;" class="green">+0.72% ↑</div></div>
-            </div>
-            <div class="flow-item" style="border-color: var(--yellow);">
-                <div><strong>INDIA VIX</strong><div style="font-size:0.7rem; color:var(--muted);">Fear Index</div></div>
-                <div style="text-align:right;"><strong class="yellow">13.85</strong><div style="font-size:0.7rem;" class="green">Safe</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: INSTITUTIONAL MONEY FLOW -->
-    <div id="moneyflow" class="tab-content">
-        <div class="card">
-            <div class="card-title"><span>🏦 Institutional Cash Flow (FII / DII)</span></div>
-            <div class="grid-2">
-                <div class="stat-box"><div class="stat-label">FII Net Activity</div><div class="stat-val red">-₹1,420 Cr</div></div>
-                <div class="stat-box"><div class="stat-label">DII Net Activity</div><div class="stat-val green">+₹2,180 Cr</div></div>
             </div>
         </div>
     </div>
@@ -293,6 +332,106 @@
         }
     }
 
+    // Crypto Database
+    const cryptoData = {
+        BTC: {
+            cCapTag: "🪙 BITCOIN SPOT / FUTURES SETUP",
+            signal: "STRONG BUY",
+            contract: "BTC / USDT (Long Position)",
+            logic: "Pattern: <strong class='yellow'>Bullish Pennant Breakout</strong> | Risk: Low-Medium",
+            entry: "$91,200 - $91,800", target: "$94,500 - $96,000", sl: "$89,900 (Strict)",
+            sup: "$90,000 - $90,500", supPat: "Pattern: EMA 50 Support",
+            res: "$95,200 - $96,000", resPat: "Pattern: Weekly Supply Wall",
+            cChartTitle: "📈 BTC Price Trend & Breakout",
+            prices: [88500, 89200, 89000, 90400, 91100, 91500]
+        },
+        ETH: {
+            cCapTag: "🪙 ETHEREUM SCALPING SETUP",
+            signal: "MOMENTUM BUY",
+            contract: "ETH / USDT (Long Position)",
+            logic: "Pattern: <strong class='yellow'>Cup & Handle Reversal</strong> | Risk: Medium",
+            entry: "$3,120 - $3,150", target: "$3,350 - $3,420", sl: "$3,040 (Strict)",
+            sup: "$3,050 - $3,080", supPat: "Pattern: Horizontal Support",
+            res: "$3,380 - $3,450", resPat: "Pattern: Swing High Resistance",
+            cChartTitle: "📈 ETH Price Trend & Cup/Handle",
+            prices: [2980, 3020, 3010, 3090, 3130, 3150]
+        },
+        SOL: {
+            cCapTag: "🪙 SOLANA BREAKOUT SETUP",
+            signal: "AGGRESSIVE BUY",
+            contract: "SOL / USDT (Long Position)",
+            logic: "Pattern: <strong class='yellow'>Ascending Triangle</strong> | Risk: High",
+            entry: "$210 - $214", target: "$235 - $245", sl: "$198 (Strict)",
+            sup: "$202 - $206", supPat: "Pattern: Trendline Support",
+            res: "$240 - $250", resPat: "Pattern: Breakout Zone",
+            cChartTitle: "📈 SOL Price Trend & Triangle",
+            prices: [195, 201, 198, 207, 212, 215]
+        },
+        XRP: {
+            cCapTag: "🪙 RIPPLE MOMENTUM SETUP",
+            signal: "BUY ON DIP",
+            contract: "XRP / USDT (Long Position)",
+            logic: "Pattern: <strong class='yellow'>Rounding Bottom</strong> | Risk: Medium",
+            entry: "$1.12 - $1.15", target: "$1.32 - $1.40", sl: "$1.05 (Strict)",
+            sup: "$1.08 - $1.10", supPat: "Pattern: Accumulation Base",
+            res: "$1.35 - $1.42", resPat: "Pattern: Supply Resistance",
+            cChartTitle: "📈 XRP Price Trend & Reversal",
+            prices: [1.02, 1.06, 1.04, 1.10, 1.13, 1.15]
+        }
+    };
+
+    let cryptoChartInstance = null;
+
+    function switchCrypto(cKey, btn) {
+        document.querySelectorAll('#cryptoTab .idx-pill').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+
+        const d = cryptoData[cKey];
+        document.getElementById('cCapTag').innerText = d.cCapTag;
+        document.getElementById('cSignal').innerText = d.signal;
+        document.getElementById('cContract').innerText = d.contract;
+        document.getElementById('cLogic').innerHTML = d.logic;
+        document.getElementById('cEntry').innerText = d.entry;
+        document.getElementById('cTarget').innerText = d.target;
+        document.getElementById('cSl').innerText = d.sl;
+        document.getElementById('cSup').innerText = d.sup;
+        document.getElementById('cSupPat').innerText = d.supPat;
+        document.getElementById('cRes').innerText = d.res;
+        document.getElementById('cResPat').innerText = d.resPat;
+        document.getElementById('cChartTitle').innerText = d.cChartTitle;
+
+        updateCryptoChart(d.prices, cKey);
+    }
+
+    function updateCryptoChart(dataPoints, labelName) {
+        const ctx = document.getElementById('cryptoChart').getContext('2d');
+        if (cryptoChartInstance) { cryptoChartInstance.destroy(); }
+        const dates = ['9 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov'];
+        
+        cryptoChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: labelName + ' Price (USDT)',
+                    data: dataPoints,
+                    borderColor: '#f7931a',
+                    backgroundColor: 'rgba(247, 147, 26, 0.1)',
+                    fill: true, pointRadius: 4, tension: 0.3, borderWidth: 2.5
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#fff', boxWidth: 12, font: { size: 11 } } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#26334d' } }
+                }
+            }
+        });
+    }
+
+    // Nifty Index Data logic (same as before)
     const indexData = {
         NIFTY: {
             capTag: "⚡ NIFTY SCALPING (Lot Size: 65)",
@@ -351,10 +490,10 @@
         }
     };
 
-    let chartInstance = null;
+    let niftyChartInstance = null;
 
     function switchIndex(idxKey, btn) {
-        document.querySelectorAll('.idx-pill').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('#scalp .idx-pill').forEach(el => el.classList.remove('active'));
         btn.classList.add('active');
 
         const d = indexData[idxKey];
@@ -371,23 +510,23 @@
         document.getElementById('tResPattern').innerText = d.resPat;
         document.getElementById('chartTitle').innerText = d.chartTitle;
 
-        updateChart(d.prices, idxKey);
+        updateNiftyChart(d.prices, idxKey);
     }
 
-    function updateChart(dataPoints, labelName) {
+    function updateNiftyChart(dataPoints, labelName) {
         const ctx = document.getElementById('priceChart').getContext('2d');
-        if (chartInstance) { chartInstance.destroy(); }
+        if (niftyChartInstance) { niftyChartInstance.destroy(); }
         const dates = ['9 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov'];
         
-        chartInstance = new Chart(ctx, {
+        niftyChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
                 datasets: [{
                     label: labelName + ' Price Trend',
                     data: dataPoints,
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
                     fill: true, pointRadius: 4, tension: 0.3, borderWidth: 2.5
                 }]
             },
@@ -395,15 +534,16 @@
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { labels: { color: '#fff', boxWidth: 12, font: { size: 11 } } } },
                 scales: {
-                    x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
-                    y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#26334d' } }
+                    x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#26334d' } }
                 }
             }
         });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-        updateChart(indexData.NIFTY.prices, 'NIFTY');
+        updateCryptoChart(cryptoData.BTC.prices, 'BTC');
+        updateNiftyChart(indexData.NIFTY.prices, 'NIFTY');
     });
 </script>
 </body>
