@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIFTY AI Pro Terminal</title>
+    <title>NIFTY & F&O AI Terminal Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg: #0b1120; --card: #151f32; --card-dark: #0f172a; --border: #26334d;
-            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308; --purple: #a855f7;
+            --text: #f8fafc; --muted: #94a3b8; --blue: #38bdf8; --green: #22c55e; --red: #ef4444; --yellow: #eab308;
         }
         * { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
@@ -16,11 +16,11 @@
 
         /* Top Header */
         .topbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
-        .brand { font-size: 1.05rem; font-weight: 800; color: var(--blue); display: flex; align-items: center; gap: 6px; }
+        .brand { font-size: 1.02rem; font-weight: 800; color: var(--blue); display: flex; align-items: center; gap: 6px; }
         .dot { height: 8px; width: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
-        .spot-pill { background: var(--card-dark); padding: 5px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: 1px solid var(--border); }
+        .spot-pill { background: var(--card-dark); padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; border: 1px solid var(--border); color: var(--green); }
 
-        /* Scrollable Pro Navigation Tabs */
+        /* Navigation Tabs */
         .nav-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { background: var(--card); color: var(--muted); border: 1px solid var(--border); padding: 8px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
@@ -36,46 +36,34 @@
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { background: var(--card-dark); border: 1px solid var(--border); padding: 10px; border-radius: 9px; }
         .stat-label { font-size: 0.68rem; color: var(--muted); }
-        .stat-val { font-size: 0.92rem; font-weight: 800; margin-top: 3px; }
+        .stat-val { font-size: 0.9rem; font-weight: 800; margin-top: 3px; }
 
-        /* Scalping & AI Trade Card */
+        /* Search Bar for F&O */
+        .search-input { width: 100%; background: var(--card-dark); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; color: #fff; font-size: 0.85rem; margin-bottom: 10px; outline: none; }
+        .search-input:focus { border-color: var(--blue); }
+
+        /* F&O Table */
+        .fno-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .fno-table th, .fno-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        .fno-table th { color: var(--muted); font-weight: 700; background: var(--card-dark); }
+        .fno-table tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+        /* Scalping Trade Card */
         .trade-card { background: linear-gradient(145deg, #0f291e, #151f32); border: 1px solid var(--green); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
         .trade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .trade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .t-pill { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px; text-align: center; }
         .t-pill span { display: block; font-size: 0.68rem; color: var(--muted); }
-        .t-pill strong { font-size: 0.92rem; margin-top: 2px; display: block; }
+        .t-pill strong { font-size: 0.9rem; margin-top: 2px; display: block; }
 
         .badge { padding: 3px 9px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; }
         .b-buy { background: var(--green); color: #000; }
         .b-sell { background: var(--red); color: #fff; }
-        .b-wait { background: var(--yellow); color: #000; }
-        .b-blue { background: var(--blue); color: #000; }
 
-        /* Option Chain Strike Bars */
-        .oi-row { display: grid; grid-template-columns: 1fr 62px 1fr; align-items: center; gap: 6px; margin-bottom: 7px; font-size: 0.75rem; }
-        .bar-wrap-left { display: flex; justify-content: flex-end; background: var(--card-dark); border-radius: 4px; overflow: hidden; height: 14px; }
-        .bar-wrap-right { display: flex; justify-content: flex-start; background: var(--card-dark); border-radius: 4px; overflow: hidden; height: 14px; }
-        .bar-put { background: var(--green); height: 100%; }
-        .bar-call { background: var(--red); height: 100%; }
-        .strike-pill { text-align: center; font-weight: 700; background: var(--card-dark); padding: 2px 0; border-radius: 4px; border: 1px solid var(--border); }
-
-        /* Flow & Stock Scanner */
         .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--blue); font-size: 0.8rem; }
-        .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-        .hm-tile { padding: 12px 8px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 0.78rem; }
-        .hm-up { background: rgba(34, 197, 94, 0.22); border: 1px solid var(--green); color: #86efac; }
-        .hm-down { background: rgba(239, 68, 68, 0.22); border: 1px solid var(--red); color: #fca5a5; }
-
-        /* News Feed */
-        .news-item { padding: 10px; background: var(--card-dark); border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
-        .news-time { font-size: 0.68rem; color: var(--blue); font-weight: 700; }
-        .news-title { font-size: 0.82rem; font-weight: 600; margin-top: 3px; line-height: 1.35; }
-
-        .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
-        .row:last-child { border-bottom: none; }
+        
         .green { color: var(--green); } .red { color: var(--red); } .yellow { color: var(--yellow); } .blue { color: var(--blue); }
-        canvas { width: 100% !important; height: 205px !important; }
+        canvas { width: 100% !important; height: 200px !important; }
     </style>
 </head>
 <body>
@@ -83,33 +71,31 @@
 <div class="container">
     <!-- Top Header -->
     <div class="topbar">
-        <div class="brand"><span class="dot"></span>NIFTY AI Terminal Pro</div>
-        <div class="spot-pill" id="liveSpot">NIFTY: 25,180.50</div>
+        <div class="brand"><span class="dot"></span>NIFTY & F&O Master Terminal</div>
+        <div class="spot-pill" id="liveSpot">₹5k Scalper Ready</div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ ₹5k Scalping & AI</button>
-        <button class="tab-btn" onclick="openTab('global', this)">🌍 Global Markets</button>
-        <button class="tab-btn" onclick="openTab('optchain', this)">📊 Option Buy/Sell</button>
-        <button class="tab-btn" onclick="openTab('stocks', this)">🎯 Stock Opportunities</button>
+        <button class="tab-btn active" onclick="openTab('scalp', this)">⚡ NIFTY Scalp</button>
+        <button class="tab-btn" onclick="openTab('fnotable', this)">📋 F&O Master List</button>
+        <button class="tab-btn" onclick="openTab('global', this)">🌍 Global & Future</button>
         <button class="tab-btn" onclick="openTab('moneyflow', this)">💸 FII/DII Flow</button>
         <button class="tab-btn" onclick="openTab('news', this)">📰 Live News</button>
     </div>
 
-    <!-- TAB 1: SCALPING SETUP, ENTRY/EXIT/SL & CHART -->
+    <!-- TAB 1: NIFTY SCALPING SETUP -->
     <div id="scalp" class="tab-content active">
-        <!-- ₹5K CAPITAL SCALPING OPPORTUNITY CARD -->
         <div class="trade-card">
             <div class="trade-header">
-                <span style="font-size:0.78rem; font-weight:800; color:var(--green);">⚡ BEST SCALPING SETUP (₹5K CAPITAL)</span>
+                <span style="font-size:0.76rem; font-weight:800; color:var(--green);">⚡ NIFTY SCALPING (₹5K FIT)</span>
                 <span class="badge b-buy">STRONG BUY (CE)</span>
             </div>
             <div style="font-size:0.95rem; font-weight:800; color:#fff; margin-bottom:4px;">
                 NIFTY 25,200 CE (1 Lot = 25 Qty)
             </div>
             <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.35;">
-                Logic: NIFTY 25,150 ke upar sustain kar raha hai + Put Writers heavy support bana rahe hain. Capital Required: <strong class="yellow">~₹2,250</strong>
+                Spot: 25,180.50 | Put Writers strong support at 25,000. Capital Needed: <strong class="yellow">~₹2,250</strong>
             </div>
             <div class="trade-grid">
                 <div class="t-pill">
@@ -127,188 +113,116 @@
             </div>
         </div>
 
-        <!-- WHERE BUYING VS SELLING IS HAPPENING -->
         <div class="card">
-            <div class="card-title"><span>🔍 Live Market Zone: Kahan Buying / Selling Ho Rahi Hai?</span></div>
+            <div class="card-title"><span>🔍 Where Buying vs Selling Is Happening</span></div>
             <div class="grid-2">
                 <div class="stat-box" style="border-color: var(--green);">
-                    <div class="stat-label">🟢 Heavy Buying Zone (Support)</div>
+                    <div class="stat-label">🟢 Heavy Buying Support</div>
                     <div class="stat-val green">25,000 - 25,100</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Put Writers active hain; yahan se bounce aane ka high chance hai.</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Put Writers active; dip par buying karein.</div>
                 </div>
                 <div class="stat-box" style="border-color: var(--red);">
-                    <div class="stat-label">🔴 Heavy Selling Zone (Resistance)</div>
+                    <div class="stat-label">🔴 Heavy Selling Wall</div>
                     <div class="stat-val red">25,300 - 25,350</div>
-                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Call Writers selling kar rahe hain; yahan profit book karein.</div>
+                    <div style="font-size:0.68rem; color:var(--muted); margin-top:3px;">Call Writers selling; yahan profit book karein.</div>
                 </div>
             </div>
         </div>
 
-        <!-- LIVE CHART -->
         <div class="card">
             <div class="card-title">
-                <span>NIFTY Price, SMA 20 & Key Levels</span>
-                <span style="font-size:0.7rem; color:var(--green);">● Trend: Bullish</span>
+                <span>NIFTY Intraday Trend & Levels</span>
+                <span style="font-size:0.7rem; color:var(--green);">● Live Momentum</span>
             </div>
             <canvas id="priceChart"></canvas>
         </div>
     </div>
 
-    <!-- TAB 2: GLOBAL MARKETS & FUTURE DIRECTION -->
-    <div id="global" class="tab-content">
-        <div class="card" style="border-color: var(--blue);">
-            <div class="card-title">
-                <span>🔮 Future Market Opening Prediction</span>
-                <span class="badge b-buy">GAP UP (+85 Pts)</span>
+    <!-- TAB 2: F&O MASTER LIST & LOT SIZES (SCREENSHOT MATCHED) -->
+    <div id="fnotable" class="tab-content">
+        <div class="card">
+            <div class="card-title"><span>📋 NSE F&O Master List & Lot Sizes</span><span style="font-size:0.7rem; color:var(--blue);">Searchable</span></div>
+            <input type="text" id="fnoSearch" class="search-input" placeholder="🔍 Search F&O Symbol (e.g. NIFTY, ABB, RELIANCE)..." onkeyup="filterFnoTable()">
+            
+            <div style="overflow-x: auto; max-height: 380px;">
+                <table class="fno-table" id="fnoTableList">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Segment</th>
+                            <th>Lot Size</th>
+                            <th>Action / Bias</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>BANKNIFTY</strong></td><td>Index F&O</td><td>15</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>FINNIFTY</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>MIDCPNIFTY</strong></td><td>Index F&O</td><td>50</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>NIFTY</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>NIFTYFIN</strong></td><td>Index F&O</td><td>25</td><td><span class="badge b-buy">HOLD</span></td></tr>
+                        <tr><td><strong>NIFTYNXT50</strong></td><td>Index F&O</td><td>10</td><td><span class="badge b-buy">BULLISH</span></td></tr>
+                        <tr><td><strong>360ONE</strong></td><td>Stock F&O</td><td>500</td><td><span class="badge b-buy">LONG</span></td></tr>
+                        <tr><td><strong>ABB</strong></td><td>Stock F&O</td><td>125</td><td><span class="badge b-buy">BUY</span></td></tr>
+                        <tr><td><strong>ABCAPITAL</strong></td><td>Stock F&O</td><td>1500</td><td><span class="badge b-buy">BUY</span></td></tr>
+                        <tr><td><strong>ADANIENSOL</strong></td><td>Stock F&O</td><td>500</td><td><span class="badge b-sell">SELL</span></td></tr>
+                        <tr><td><strong>ADANIENT</strong></td><td>Stock F&O</td><td>300</td><td><span class="badge b-buy">BUY</span></td></tr>
+                        <tr><td><strong>RELIANCE</strong></td><td>Stock F&O</td><td>250</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>INFY</strong></td><td>Stock F&O</td><td>400</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>TCS</strong></td><td>Stock F&O</td><td>175</td><td><span class="badge b-sell">SELL PE</span></td></tr>
+                        <tr><td><strong>SBIN</strong></td><td>Stock F&O</td><td>750</td><td><span class="badge b-buy">BUY CE</span></td></tr>
+                        <tr><td><strong>TATASTEEL</strong></td><td>Stock F&O</td><td>5500</td><td><span class="badge b-sell">SELL PE</span></td></tr>
+                    </tbody>
+                </table>
             </div>
-            <div style="font-size:0.78rem; color:#cbd5e1; line-height:1.4;">
-                GIFT NIFTY aur US NASDAQ dono positive zone mein trade kar rahe hain. Dollar Index (DXY) kamzor hone se Indian market mein foreign buying badh sakti hai.
+            <div style="font-size:0.72rem; color:var(--muted); text-align:center; margin-top:8px;">
+                👉 Aap upar search box mein kisi bhi stock ya index ka naam type karke uska lot size dekh sakte hain.
             </div>
         </div>
+    </div>
 
+    <!-- TAB 3: GLOBAL MARKETS -->
+    <div id="global" class="tab-content">
         <div class="card">
             <div class="card-title"><span>🌍 Global Indices & Future Cues</span></div>
             <div class="flow-item" style="border-color: var(--green);">
-                <div><strong>GIFT NIFTY (Future)</strong><div style="font-size:0.7rem; color:var(--muted);">Indian Market Opening Indicator</div></div>
+                <div><strong>GIFT NIFTY (Future)</strong><div style="font-size:0.7rem; color:var(--muted);">Opening Indicator</div></div>
                 <div style="text-align:right;"><strong class="green">25,265.00</strong><div style="font-size:0.7rem;" class="green">+0.38% ↑</div></div>
             </div>
             <div class="flow-item" style="border-color: var(--green);">
-                <div><strong>NASDAQ (US Tech)</strong><div style="font-size:0.7rem; color:var(--muted);">Affects NIFTY IT & Sentiment</div></div>
+                <div><strong>NASDAQ (US Tech)</strong><div style="font-size:0.7rem; color:var(--muted);">IT Sentiment</div></div>
                 <div style="text-align:right;"><strong class="green">19,280.40</strong><div style="font-size:0.7rem;" class="green">+0.72% ↑</div></div>
             </div>
-            <div class="flow-item" style="border-color: var(--green);">
-                <div><strong>DOW JONES (US Market)</strong><div style="font-size:0.7rem; color:var(--muted);">Global Institutional Trend</div></div>
-                <div style="text-align:right;"><strong class="green">43,910.15</strong><div style="font-size:0.7rem;" class="green">+0.45% ↑</div></div>
-            </div>
             <div class="flow-item" style="border-color: var(--yellow);">
-                <div><strong>INDIA VIX (Fear Index)</strong><div style="font-size:0.7rem; color:var(--muted);">Below 15 = Safe for Option Buyers</div></div>
-                <div style="text-align:right;"><strong class="yellow">13.85</strong><div style="font-size:0.7rem;" class="green">-2.10% (Stable)</div></div>
-            </div>
-            <div class="flow-item" style="border-color: var(--blue);">
-                <div><strong>USD / INR & Crude Oil</strong><div style="font-size:0.7rem; color:var(--muted);">Brent Crude: $72.40 (Low = Good)</div></div>
-                <div style="text-align:right;"><strong class="blue">₹84.38</strong><div style="font-size:0.7rem;" class="muted">Neutral</div></div>
+                <div><strong>INDIA VIX</strong><div style="font-size:0.7rem; color:var(--muted);">Fear Index</div></div>
+                <div style="text-align:right;"><strong class="yellow">13.85</strong><div style="font-size:0.7rem;" class="green">Safe</div></div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: OPTION CHAIN BUYING VS SELLING -->
-    <div id="optchain" class="tab-content">
-        <div class="card">
-            <div class="card-title"><span>📊 Option Chain & PCR Strength</span><span class="badge b-buy">PCR: 1.28 (Bullish)</span></div>
-            <div class="grid-3">
-                <div class="stat-box"><div class="stat-label">Max Pain</div><div class="stat-val yellow">25,150</div></div>
-                <div class="stat-box"><div class="stat-label">Put Buying/Writing</div><div class="stat-val green">25,000 PE</div></div>
-                <div class="stat-box"><div class="stat-label">Call Selling Wall</div><div class="stat-val red">25,300 CE</div></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span class="green">Put Writers (Buying Support)</span>
-                <span>Strike</span>
-                <span class="red">Call Writers (Selling)</span>
-            </div>
-            <div id="oiBarsContainer"></div>
-            <div style="font-size:0.73rem; color:var(--muted); text-align:center; margin-top:8px;">
-                👉 Jahan Green bar bada hai wahan buyers market ko girne nahi denge. Jahan Red bar bada hai wahan sellers market ko rokenge.
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 4: STOCK TRADING OPPORTUNITIES -->
-    <div id="stocks" class="tab-content">
-        <div class="card">
-            <div class="card-title"><span>🎯 Intraday & Swing Stock Opportunities</span><span style="font-size:0.7rem; color:var(--blue);">Live Scanner</span></div>
-            
-            <!-- Stock 1 -->
-            <div class="flow-item" style="border-color: var(--green); flex-direction: column; align-items: stretch;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>INFY (Infosys) • <span class="green">BUYING (Long Build-up)</span></strong>
-                    <span class="badge b-buy">BUY</span>
-                </div>
-                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: NASDAQ rally + Strong volume breakout above 20 EMA.</div>
-                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
-                    <span>Entry: <b class="blue">₹1,865</b></span>
-                    <span>Target: <b class="green">₹1,910</b></span>
-                    <span>SL: <b class="red">₹1,842</b></span>
-                </div>
-            </div>
-
-            <!-- Stock 2 -->
-            <div class="flow-item" style="border-color: var(--green); flex-direction: column; align-items: stretch;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>HDFCBANK • <span class="green">ACCUMULATION</span></strong>
-                    <span class="badge b-buy">BUY</span>
-                </div>
-                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: DIIs heavy buying support + BankNifty short covering.</div>
-                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
-                    <span>Entry: <b class="blue">₹1,740</b></span>
-                    <span>Target: <b class="green">₹1,785</b></span>
-                    <span>SL: <b class="red">₹1,718</b></span>
-                </div>
-            </div>
-
-            <!-- Stock 3 -->
-            <div class="flow-item" style="border-color: var(--red); flex-direction: column; align-items: stretch;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>TATASTEEL • <span class="red">SELLING (Short Build-up)</span></strong>
-                    <span class="badge b-sell">SELL</span>
-                </div>
-                <div style="font-size:0.72rem; color:var(--muted); margin:4px 0;">Reason: Metal sector weakness + Breakdown below key support.</div>
-                <div style="display:flex; justify-content:space-between; font-size:0.76rem; background:rgba(255,255,255,0.05); padding:5px 8px; border-radius:5px;">
-                    <span>Entry: <b class="blue">₹146.50</b></span>
-                    <span>Target: <b class="green">₹141.00</b></span>
-                    <span>SL: <b class="red">₹149.20</b></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: INSTITUTIONAL MONEY FLOW & HEATMAP -->
+    <!-- TAB 4: INSTITUTIONAL MONEY FLOW -->
     <div id="moneyflow" class="tab-content">
         <div class="card">
             <div class="card-title"><span>🏦 Institutional Cash Flow (FII / DII)</span></div>
             <div class="grid-2">
-                <div class="stat-box"><div class="stat-label">FII Net Activity</div><div class="stat-val red">-₹1,420 Cr (Selling)</div></div>
-                <div class="stat-box"><div class="stat-label">DII Net Activity</div><div class="stat-val green">+₹2,180 Cr (Buying)</div></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title"><span>🗺️ Sector Buying / Selling Heatmap</span></div>
-            <div class="heatmap-grid">
-                <div class="hm-tile hm-up">NIFTY IT<br>+1.85% (Buy)</div>
-                <div class="hm-tile hm-up">NIFTY BANK<br>+0.92% (Buy)</div>
-                <div class="hm-tile hm-down">NIFTY AUTO<br>-0.64% (Sell)</div>
-                <div class="hm-tile hm-up">NIFTY PHARMA<br>+1.15% (Buy)</div>
-                <div class="hm-tile hm-down">NIFTY METAL<br>-1.10% (Sell)</div>
-                <div class="hm-tile hm-up">NIFTY FMCG<br>+0.45% (Buy)</div>
+                <div class="stat-box"><div class="stat-label">FII Net Activity</div><div class="stat-val red">-₹1,420 Cr</div></div>
+                <div class="stat-box"><div class="stat-label">DII Net Activity</div><div class="stat-val green">+₹2,180 Cr</div></div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 6: LIVE MARKET NEWS -->
+    <!-- TAB 5: LIVE NEWS -->
     <div id="news" class="tab-content">
         <div class="card">
-            <div class="card-title"><span>📰 Market Moving News & Alerts</span><span style="font-size:0.7rem; color:var(--green);">● LIVE</span></div>
-            <div class="news-item">
-                <div class="news-time">GLOBAL CUES • FUTURE IMPACT</div>
-                <div class="news-title">US Tech stocks mein tezi ke baad GIFT NIFTY 85 points upar; Monday ko positive opening ke sanket.</div>
-            </div>
-            <div class="news-item">
-                <div class="news-time">OPTIONS DATA • SUPPORT/RESISTANCE</div>
-                <div class="news-title">25,000 Put strike par heavy writing; scalpers ke liye dip par buying karne ka achha mauka.</div>
-            </div>
-            <div class="news-item">
-                <div class="news-time">INSTITUTIONAL FLOW</div>
-                <div class="news-title">Domestic Institutions (DIIs) lagatar market ko niche se support de rahe hain.</div>
+            <div class="card-title"><span>📰 Market News & F&O Updates</span></div>
+            <div class="news-item" style="padding:10px; background:var(--card-dark); border-radius:8px; margin-bottom:8px;">
+                <div class="news-time" style="font-size:0.68rem; color:var(--blue); font-weight:700;">F&O UPDATE</div>
+                <div class="news-title" style="font-size:0.82rem; font-weight:600; margin-top:3px;">NSE F&O lot sizes updated for current expiry contracts. Small capital traders NIFTY & FINNIFTY ko prefer karein.</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Tab Switcher
     function openTab(tabId, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -316,46 +230,35 @@
         btn.classList.add('active');
     }
 
-    // Dynamic Option Chain Bars
-    function renderOptionChain() {
-        const strikes = [25000, 25050, 25100, 25150, 25200, 25250, 25300];
-        const putWidths = [90, 78, 66, 58, 35, 22, 15];
-        const callWidths = [16, 24, 38, 52, 72, 85, 94];
-
-        let html = '';
-        strikes.forEach((st, idx) => {
-            const isAtm = st === 25150 ? 'border-color:#38bdf8; color:#38bdf8;' : '';
-            html += `
-                <div class="oi-row">
-                    <div class="bar-wrap-left"><div class="bar-put" style="width:${putWidths[idx]}%"></div></div>
-                    <div class="strike-pill" style="${isAtm}">${st}</div>
-                    <div class="bar-wrap-right"><div class="bar-call" style="width:${callWidths[idx]}%"></div></div>
-                </div>`;
-        });
-        document.getElementById('oiBarsContainer').innerHTML = html;
+    // Search filter for F&O table
+    function filterFnoTable() {
+        let input = document.getElementById('fnoSearch').value.toUpperCase();
+        let table = document.getElementById('fnoTableList');
+        let tr = table.getElementsByTagName('tr');
+        for (let i = 1; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName('td')[0];
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(input) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
     }
-    renderOptionChain();
 
-    // Price Chart
+    // Chart
     const dates = ['9 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov'];
     const prices = [24920, 25010, 24980, 25090, 25140, 25180];
-    const sma20 = [24780, 24830, 24870, 24920, 24980, 25030];
-    const sup = 25000, res = 25350;
-
     new Chart(document.getElementById('priceChart'), {
         type: 'line',
         data: {
             labels: dates,
-            datasets: [
-                { label: 'NIFTY', data: prices, borderColor: '#38bdf8', pointRadius: 3, tension: 0.2, borderWidth: 2 },
-                { label: 'SMA 20', data: sma20, borderColor: '#facc15', pointRadius: 0, borderWidth: 1.5 },
-                { label: 'Buying Support (25,000)', data: prices.map(() => sup), borderColor: '#22c55e', borderDash: [5, 5], pointRadius: 0, borderWidth: 1.2 },
-                { label: 'Selling Resistance (25,350)', data: prices.map(() => res), borderColor: '#ef4444', borderDash: [5, 5], pointRadius: 0, borderWidth: 1.2 }
-            ]
+            datasets: [{ label: 'NIFTY', data: prices, borderColor: '#38bdf8', pointRadius: 3, tension: 0.25, borderWidth: 2.2 }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             plugins: { legend: { labels: { color: '#fff', boxWidth: 10, font: { size: 10 } } } },
             scales: {
                 x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
