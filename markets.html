@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India Markets Live</title>
+<style>
+  html, body { margin:0; height:100%; background:#0f172a; font-family:sans-serif; }
+  #bar { display:flex; gap:8px; overflow-x:auto; padding:10px; background:#1e293b; }
+  button { flex:0 0 auto; background:#334155; color:#fff; border:0; border-radius:20px;
+           padding:8px 14px; font-size:14px; }
+  button.on { background:#38bdf8; color:#0f172a; font-weight:bold; }
+  #tv { height:calc(100% - 56px); }
+</style>
+</head>
+<body>
+  <div id="bar"></div>
+  <div id="tv"></div>
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    const list = [
+      ["NIFTY 50","NSE:NIFTY"],
+      ["BANK NIFTY","NSE:BANKNIFTY"],
+      ["SENSEX","BSE:SENSEX"],
+      ["FIN NIFTY","NSE:CNXFINANCE"],
+      ["INDIA VIX","NSE:INDIAVIX"],
+      ["RELIANCE","NSE:RELIANCE"],
+      ["TCS","NSE:TCS"],
+      ["HDFC BANK","NSE:HDFCBANK"],
+      ["INFOSYS","NSE:INFY"],
+      ["ICICI BANK","NSE:ICICIBANK"],
+      ["SBI","NSE:SBIN"],
+      ["ITC","NSE:ITC"]
+    ];
+    const bar = document.getElementById('bar');
+
+    function show(sym, btn){
+      document.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById('tv').innerHTML = '';
+      new TradingView.widget({
+        autosize: true,
+        symbol: sym,
+        interval: "5",
+        timezone: "Asia/Kolkata",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        allow_symbol_change: true,
+        container_id: "tv"
+      });
+    }
+
+    list.forEach(([name, sym], i) => {
+      const b = document.createElement('button');
+      b.textContent = name;
+      b.onclick = () => show(sym, b);
+      bar.appendChild(b);
+      if(i === 0) show(sym, b);
+    });
+  </script>
+</body>
+</html>
